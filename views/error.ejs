@@ -1,0 +1,35 @@
+<%
+layout('layouts/boilerplate');
+  pageTitle = `WanderLust | ${statusCode}`;
+  pageCss = '/css/error.css';
+  navActionHref = '/listings';
+  navActionLabel = 'Browse stays';
+  footerText = 'WanderLust - graceful support for every journey.';
+%>
+
+<main class="error-page">
+  <section class="error-hero" aria-labelledby="error-title">
+    <div class="error-visual">
+      <span class="error-code"><%= statusCode %></span>
+    </div>
+
+    <div class="error-content">
+      <span class="eyebrow">Error <%= statusCode %></span>
+      <h1 id="error-title"><%= message %></h1>
+      <% if (err && err.message && err.message !== message) { %>
+        <p class="error-details">
+          <strong>Details:</strong> <%= err.message %>
+        </p>
+      <% } %>
+      <p>
+        We could not complete that request. You can return to available stays,
+        create a fresh listing, or try the previous action again.
+      </p>
+
+      <div class="error-actions">
+        <a href="/listings" class="btn-primary">View listings</a>
+        <a href="/listings/new" class="btn-secondary">Create listing</a>
+      </div>
+    </div>
+  </section>
+</main>

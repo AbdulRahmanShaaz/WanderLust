@@ -82,7 +82,7 @@ app.use((err, req, res, next) => {
   const { statusCode, message } = getErrorResponse(err);
 
   console.error(err);
-  res.status(statusCode).send(message);
+  res.status(statusCode).render('error', { err, statusCode, message });
 });
 
 async function start() {
