@@ -7,9 +7,12 @@ const getErrorResponse = (err) => {
   }
 
   if (err.name === 'ValidationError') {
+    const errors = Object.values(err.errors)
+      .map(e => `${e.path}: ${e.message}`)
+      .join(', ');
     return {
       statusCode: 400,
-      message: 'Unable to save listing. Please check the details and try again.',
+      message: errors || 'Unable to save listing. Please check the details and try again.',
     };
   }
 

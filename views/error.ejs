@@ -16,11 +16,7 @@ layout('layouts/boilerplate');
     <div class="error-content">
       <span class="eyebrow">Error <%= statusCode %></span>
       <h1 id="error-title"><%= message %></h1>
-      <% if (err && err.message && err.message !== message) { %>
-        <p class="error-details">
-          <strong>Details:</strong> <%= err.message %>
-        </p>
-      <% } %>
+      <!-- Detailed error information is logged on the server only. -->
       <p>
         We could not complete that request. You can return to available stays,
         create a fresh listing, or try the previous action again.

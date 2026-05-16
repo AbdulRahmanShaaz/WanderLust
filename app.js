@@ -7,6 +7,7 @@ const ejsMate = require('ejs-mate');
 const wrapAsync = require('./utils/wrapAsync');
 const ExpressError = require('./utils/ExpressError');
 const getErrorResponse = require('./utils/getErrorResponse');
+const validateListing = require('./middleware/validateListing');
 
 const app = express();
 const port = process.env.PORT || 8080;
@@ -30,7 +31,7 @@ app.get('/listings/new', (req, res) => {
   res.render('listings/new');
 });
 
-app.post('/listings', wrapAsync(async (req, res) => {
+app.post('/listings', validateListing, wrapAsync(async (req, res) => {
   const listing = new Listing(req.body.listing);
   await listing.save();
   res.redirect(`/listings/${listing._id}`);
@@ -44,7 +45,7 @@ app.get('/listings/:id/edit', wrapAsync(async (req, res) => {
   res.render('listings/edit', { listing });
 }));
 
-app.put('/listings/:id', wrapAsync(async (req, res) => {
+app.put('/listings/:id', validateListing, wrapAsync(async (req, res) => {
   const listing = await Listing.findByIdAndUpdate(
     req.params.id,
     req.body.listing,
@@ -81,8 +82,11 @@ app.all('/{*splat}', (req, res, next) => {
 app.use((err, req, res, next) => {
   const { statusCode, message } = getErrorResponse(err);
 
+  // Log full error details to the server console for debugging
   console.error(err);
-  res.status(statusCode).render('error', { err, statusCode, message });
+
+  // Render only the user-friendly status and message to the client
+  res.status(statusCode).render('error', { statusCode, message });
 });
 
 async function start() {

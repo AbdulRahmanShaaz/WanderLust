@@ -1,5 +1,5 @@
 {
-  "name": "air_bnb",
+  "name": "wanderlust",
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
@@ -17,6 +17,7 @@
     "ejs": "^3.1.10",
     "ejs-mate": "^4.0.0",
     "express": "^5.2.1",
+    "joi": "^18.2.1",
     "method-override": "^3.0.0",
     "mongoose": "^9.6.2"
   }
