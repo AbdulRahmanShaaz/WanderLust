@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= pageTitle || 'WanderLust' %></title>
+  <link rel="stylesheet" href="/css/base.css" />
+  <% if (typeof pageCss !== 'undefined' && pageCss) { %>
+    <link rel="stylesheet" href="<%= pageCss %>" />
+  <% } %>
+</head>
+<body>
+  <div class="page">
+    <%- include('../includes/navbar') %>
+    <%- body %>
+    <%- include('../includes/footer') %>
+  </div>
+</body>
+</html>

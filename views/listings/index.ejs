@@ -1,0 +1,58 @@
+<%
+layout('layouts/boilerplate');
+  pageTitle = 'WanderLust | Premium Stays';
+  pageCss = '/css/listings/index.css';
+  navActionHref = '/listings/new';
+  navActionLabel = 'List your place';
+  footerText = 'WanderLust — curated stays inspired by Airbnb.';
+%>
+<section class="hero">
+  <div class="hero-content">
+    <h1>Stay somewhere exceptional, every time.</h1>
+    <p>Explore a curated collection of vacation homes and luxury retreats with beautiful design, inspiring locations, and effortless booking.</p>
+  </div>
+  <div class="hero-actions">
+    <span class="pill">Coastal escapes</span>
+    <span class="pill">Urban retreats</span>
+    <span class="pill">Scenic hideaways</span>
+  </div>
+</section>
+
+<main>
+  <% if (!listings || listings.length === 0) { %>
+    <section class="empty-state">
+      <h2>No listings available</h2>
+      <p>We are waiting for more homes to arrive. Seed the database or check back once the listings are loaded.</p>
+    </section>
+  <% } else { %>
+    <div class="section-heading">
+      <div>
+        <h2>Available stays</h2>
+        <p><%= listings.length %> curated places ready for your next trip.</p>
+      </div>
+    </div>
+    <section class="listings-grid">
+      <% listings.forEach(listing => { %>
+        <% const listingPrice = Number(listing.price); const formattedListingPrice = !Number.isNaN(listingPrice) ? listingPrice.toLocaleString('en-IN') : 'N/A'; const defaultImage = 'https://images.unsplash.com/photo-1625505826533-5c80aca7d157?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'; const listingImage = listing.image && listing.image.url ? listing.image.url : listing.image; %>
+        <article class="card">
+          <img class="card__image" src="<%= listingImage || defaultImage %>" alt="<%= listing.title %>" onerror="this.onerror=null;this.src='<%= defaultImage %>'" />
+          <div class="card__body">
+            <span class="card__badge"><%= listing.country %></span>
+            <div>
+              <h2 class="card__title"><%= listing.title %></h2>
+              <div class="card__meta">
+                <span><strong><%= listing.location %></strong></span>
+                <span class="price">₹<%= formattedListingPrice %> / night</span>
+              </div>
+            </div>
+            <p class="card__desc"><%= listing.description %></p>
+            <div class="card__footer">
+              <span>Verified host</span>
+              <a href="/listings/<%= listing._id %>" class="card__action">View stay</a>
+            </div>
+          </div>
+        </article>
+      <% }) %>
+    </section>
+  <% } %>
+</main>

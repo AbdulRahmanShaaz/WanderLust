@@ -1,0 +1,96 @@
+<%
+layout('layouts/boilerplate');
+  pageTitle = `WanderLust | ${listing.title}`;
+  pageCss = '/css/listings/show.css';
+  breadcrumbs = `<a href="/listings">All stays</a><span>·</span><span>${listing.title}</span>`;
+  footerText = 'WanderLust — luxury stays crafted for modern journeys.';
+%>
+<% const priceValue = Number(listing.price); const formattedPrice = !Number.isNaN(priceValue) ? priceValue.toLocaleString('en-IN') : 'N/A'; %>
+
+<section class="hero">
+  <div class="hero-card">
+    <% const defaultImage = 'https://images.unsplash.com/photo-1625505826533-5c80aca7d157?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'; const listingImage = listing.image && listing.image.url ? listing.image.url : listing.image; %>
+    <img src="<%= listingImage || defaultImage %>" alt="<%= listing.title %>" onerror="this.onerror=null;this.src='<%= defaultImage %>'" />
+  </div>
+
+  <div class="hero-panel">
+    <div class="tagline-box">Premium collection</div>
+    <h1><%= listing.title %></h1>
+    <p><%= listing.description || 'A carefully curated stay with exceptional attention to detail, modern amenities, and seamless service for your next getaway.' %></p>
+
+    <div class="overview">
+      <div class="overview-grid">
+        <div class="overview-card">
+          <strong>Location</strong>
+          <span><%= listing.location || 'Global destination' %></span>
+        </div>
+        <div class="overview-card">
+          <strong>Country</strong>
+          <span><%= listing.country || 'Worldwide' %></span>
+        </div>
+        <div class="overview-card">
+          <strong>Price per night</strong>
+          <span>₹<%= formattedPrice %> <small>/ night</small></span>
+        </div>
+        <div class="overview-card">
+          <strong>Guest rating</strong>
+          <span>5.0 / 5</span>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Property details</h2>
+        <p>Enjoy effortless luxury in a space designed for comfort, privacy, and polished hospitality. Every detail is tailored to exceed expectations.</p>
+      </div>
+    </div>
+
+    <div class="cta-panel">
+      <p class="price-tag">₹<%= formattedPrice %><small> / night</small></p>
+      <p class="price-subtitle">Instant booking available with trusted host verification.</p>
+      <div class="badge-row">
+        <span class="badge">Verified host</span>
+        <span class="badge">Corporate ready</span>
+        <span class="badge">Premium support</span>
+      </div>
+      <div class="actions">
+        <a href="/listings" class="btn-secondary">Back to listings</a>
+        <a href="/listings/<%= listing._id %>/edit" class="btn-secondary">Edit listing</a>
+        <button class="btn-primary">Request booking</button>
+        <form class="delete-form" action="/listings/<%= listing._id %>?_method=DELETE" method="POST" onsubmit="return confirm('Delete this listing permanently?');">
+          <button type="submit" class="btn-danger">Delete listing</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <h2>Highlights</h2>
+  <div class="detail-list">
+    <div class="detail-item">
+      <strong>Best for</strong>
+      <span>Executive retreats</span>
+    </div>
+    <div class="detail-item">
+      <strong>Ideal guest</strong>
+      <span>Business travelers & refined guests</span>
+    </div>
+    <div class="detail-item">
+      <strong>Host quality</strong>
+      <span>5-star service</span>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <h2>More about this stay</h2>
+  <p><%= listing.description || 'This premium property offers an elevated stay experience with modern style, thoughtful amenities, and a location that feels both exclusive and effortlessly accessible.' %></p>
+</section>
+
+<section class="section location-card">
+  <small>Location overview</small>
+  <p><strong><%= listing.location || 'Location information unavailable' %></strong></p>
+  <% if (listing.country) { %>
+    <p><strong>Country</strong> • <%= listing.country %></p>
+  <% } %>
+</section>

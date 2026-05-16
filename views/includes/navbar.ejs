@@ -1,0 +1,26 @@
+<header class="topbar">
+  <div>
+    <div class="brand">WanderLust</div>
+    <div class="tagline"><%= typeof navSubtitle !== 'undefined' ? navSubtitle : 'Premium stays for modern travelers' %></div>
+  </div>
+  <% const navLinks = typeof navItems !== 'undefined' && Array.isArray(navItems)
+    ? navItems
+    : [
+        { label: 'Stays', href: '/listings' },
+        { label: 'List Property', href: '/listings/new' },
+        { label: 'Travel Support', href: '#' },
+        { label: 'Saved Plans', href: '#' }
+      ]; %>
+  <nav class="main-nav" aria-label="Primary">
+    <% navLinks.forEach(item => { %>
+      <a class="main-nav__link" href="<%= item.href %>"><%= item.label %></a>
+    <% }) %>
+  </nav>
+  <% if (typeof navActionHref !== 'undefined' && navActionHref && typeof navActionLabel !== 'undefined' && navActionLabel) { %>
+    <a href="<%= navActionHref %>" class="nav-action"><%= navActionLabel %></a>
+  <% } else if (typeof breadcrumbs !== 'undefined' && breadcrumbs) { %>
+    <div class="breadcrumbs"><%- breadcrumbs %></div>
+  <% } else { %>
+    <a href="/listings/new" class="nav-action">Host Dashboard</a>
+  <% } %>
+</header>

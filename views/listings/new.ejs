@@ -1,0 +1,79 @@
+<%
+layout('layouts/boilerplate');
+  pageTitle = 'WanderLust | List Your Place';
+  pageCss = '/css/listings/new.css';
+  navActionHref = '/listings';
+  navActionLabel = 'All stays';
+  footerText = 'WanderLust — curated stays inspired by Airbnb.';
+%>
+<main class="layout">
+  <section class="intro">
+    <span class="eyebrow">Host onboarding</span>
+    <h1>List a stay guests will remember.</h1>
+    <p>Create a polished listing with the essentials travelers need to trust, compare, and book your place with confidence.</p>
+    <div class="trust-grid">
+      <div class="trust-item">
+        <strong>Clear positioning</strong>
+        Use a direct title, exact location, and a description that explains the experience.
+      </div>
+      <div class="trust-item">
+        <strong>Strong imagery</strong>
+        Add a high-quality image URL. If it is left blank, WanderLust will use a tasteful default.
+      </div>
+      <div class="trust-item">
+        <strong>Transparent pricing</strong>
+        Set a nightly price in rupees so guests can evaluate quickly.
+      </div>
+    </div>
+  </section>
+
+  <section class="form-panel">
+    <div class="form-header">
+      <h2>Property details</h2>
+      <p>Complete every field for a professional listing page.</p>
+    </div>
+
+    <form action="/listings" method="POST">
+      <div class="field-grid">
+        <label class="full">
+          Listing title
+          <input type="text" name="listing[title]" placeholder="Oceanfront villa with private deck" required minlength="5" />
+          <span class="hint">Make it specific and easy to scan.</span>
+        </label>
+
+        <label class="full">
+          Description
+          <textarea name="listing[description]" placeholder="Describe the space, guest experience, nearby highlights, and what makes it memorable." required minlength="20"></textarea>
+          <span class="hint">Mention the setting, comfort, privacy, and standout details.</span>
+        </label>
+
+        <label>
+          Location
+          <input type="text" name="listing[location]" placeholder="Goa" required />
+        </label>
+
+        <label>
+          Country
+          <input type="text" name="listing[country]" placeholder="India" required />
+        </label>
+
+        <label>
+          Price per night
+          <input type="number" name="listing[price]" placeholder="4500" required min="0" step="1" />
+          <span class="hint">Enter the amount without currency symbols.</span>
+        </label>
+
+        <label>
+          Image URL
+          <input type="url" name="listing[image]" placeholder="https://images.unsplash.com/..." />
+          <span class="hint">Use a direct, publicly accessible image URL.</span>
+        </label>
+      </div>
+
+      <div class="actions">
+        <a href="/listings" class="btn-secondary">Cancel</a>
+        <button type="submit" class="btn-primary">Create listing</button>
+      </div>
+    </form>
+  </section>
+</main>

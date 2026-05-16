@@ -1,0 +1,69 @@
+<%
+layout('layouts/boilerplate');
+  pageTitle = `WanderLust | Edit ${listing.title}`;
+  pageCss = '/css/listings/edit.css';
+  navActionHref = `/listings/${listing._id}`;
+  navActionLabel = 'View listing';
+  footerText = 'WanderLust — curated and built Majesty MARS .';
+%>
+<main class="layout">
+  <section class="intro">
+    <span class="eyebrow">Listing management</span>
+    <h1>Refine the stay before guests see it.</h1>
+    <p>Edit the content that drives trust: title, location, pricing, imagery, and the property story.</p>
+    <div class="summary-card">
+      <strong><%= listing.title %></strong>
+      <span><%= listing.location %>, <%= listing.country %></span>
+    </div>
+  </section>
+
+  <section class="form-panel">
+    <div class="form-header">
+      <h2>Edit property details</h2>
+      <p>Changes are saved to the listing immediately.</p>
+    </div>
+
+    <form action="/listings/<%= listing._id %>?_method=PUT" method="POST">
+      <div class="field-grid">
+        <label class="full">
+          Listing title
+          <input type="text" name="listing[title]" value="<%= listing.title %>" required minlength="5" />
+          <span class="hint">Keep it specific and easy to scan.</span>
+        </label>
+
+        <label class="full">
+          Description
+          <textarea name="listing[description]" required minlength="20"><%= listing.description %></textarea>
+          <span class="hint">Explain the setting, comfort, privacy, and standout details.</span>
+        </label>
+
+        <label>
+          Location
+          <input type="text" name="listing[location]" value="<%= listing.location %>" required />
+        </label>
+
+        <label>
+          Country
+          <input type="text" name="listing[country]" value="<%= listing.country %>" required />
+        </label>
+
+        <label>
+          Price per night
+          <input type="number" name="listing[price]" value="<%= listing.price %>" required min="0" step="1" />
+          <span class="hint">Enter the amount without currency symbols.</span>
+        </label>
+
+        <label>
+          Image URL
+          <input type="url" name="listing[image]" value="<%= listing.image %>" />
+          <span class="hint">Leave blank to use the default image.</span>
+        </label>
+      </div>
+
+      <div class="actions">
+        <a href="/listings/<%= listing._id %>" class="btn-secondary">Cancel</a>
+        <button type="submit" class="btn-primary">Save changes</button>
+      </div>
+    </form>
+  </section>
+</main>
