@@ -9,11 +9,13 @@ const listingSchema = new Schema({
         type: String,
         required: true,
         trim: true,
+        minlength: 5,
     },
     description: {
         type: String,
         required: true,
         trim: true,
+        minlength: 20,
     },
     image: {
         type: String,
@@ -33,11 +35,13 @@ const listingSchema = new Schema({
         type: String,
         required: true,
         trim: true,
+        minlength: 2,
     },
     country: {
         type: String,
         required: true,
         trim: true,
+        minlength: 2,
     },
 });
 
