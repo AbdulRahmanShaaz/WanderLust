@@ -166,6 +166,35 @@
       font-weight: 600;
     }
 
+    .validated-form input.is-valid,
+    .validated-form textarea.is-valid {
+      border-color: #22a06b;
+      background: #f4fbf7;
+      box-shadow: 0 0 0 4px rgba(34, 160, 107, 0.1);
+    }
+
+    .validated-form input.is-invalid,
+    .validated-form textarea.is-invalid {
+      border-color: #d64545;
+      background: #fff8f8;
+      box-shadow: 0 0 0 4px rgba(214, 69, 69, 0.1);
+    }
+
+    .validation-message {
+      min-height: 1.2rem;
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .validation-message.is-success {
+      color: #137a51;
+    }
+
+    .validation-message.is-error {
+      color: #b33131;
+    }
+
     @media (max-width: 980px) {
       .topbar {
         grid-template-columns: 1fr;

@@ -2,6 +2,7 @@
 layout('layouts/boilerplate');
   pageTitle = `WanderLust | Edit ${listing.title}`;
   pageCss = '/css/listings/edit.css';
+  pageScript = '/js/form-validation.js';
   navActionHref = `/listings/${listing._id}`;
   navActionLabel = 'View listing';
   footerText = 'WanderLust — curated and built Majesty MARS .';
@@ -23,40 +24,46 @@ layout('layouts/boilerplate');
       <p>Changes are saved to the listing immediately.</p>
     </div>
 
-    <form action="/listings/<%= listing._id %>?_method=PUT" method="POST">
+    <form action="/listings/<%= listing._id %>?_method=PUT" method="POST" class="validated-form" novalidate>
       <div class="field-grid">
         <label class="full">
           Listing title
-          <input type="text" name="listing[title]" value="<%= listing.title %>" required minlength="5" />
+          <input type="text" name="listing[title]" value="<%= listing.title %>" required minlength="5" data-valid-text="Looks clear and specific." />
           <span class="hint">Keep it specific and easy to scan.</span>
+          <span class="validation-message" aria-live="polite"></span>
         </label>
 
         <label class="full">
           Description
-          <textarea name="listing[description]" required minlength="20"><%= listing.description %></textarea>
+          <textarea name="listing[description]" required minlength="20" data-valid-text="Great, guests have enough detail."><%= listing.description %></textarea>
           <span class="hint">Explain the setting, comfort, privacy, and standout details.</span>
+          <span class="validation-message" aria-live="polite"></span>
         </label>
 
         <label>
           Location
-          <input type="text" name="listing[location]" value="<%= listing.location %>" required />
+          <input type="text" name="listing[location]" value="<%= listing.location %>" required data-valid-text="Location added." />
+          <span class="validation-message" aria-live="polite"></span>
         </label>
 
         <label>
           Country
-          <input type="text" name="listing[country]" value="<%= listing.country %>" required />
+          <input type="text" name="listing[country]" value="<%= listing.country %>" required data-valid-text="Country added." />
+          <span class="validation-message" aria-live="polite"></span>
         </label>
 
         <label>
           Price per night
-          <input type="number" name="listing[price]" value="<%= listing.price %>" required min="0" step="1" />
+          <input type="number" name="listing[price]" value="<%= listing.price %>" required min="0" step="1" data-valid-text="Price looks good." />
           <span class="hint">Enter the amount without currency symbols.</span>
+          <span class="validation-message" aria-live="polite"></span>
         </label>
 
         <label>
           Image URL
-          <input type="url" name="listing[image]" value="<%= listing.image %>" />
+          <input type="url" name="listing[image]" value="<%= listing.image %>" data-valid-text="Image URL is valid." />
           <span class="hint">Leave blank to use the default image.</span>
+          <span class="validation-message" aria-live="polite"></span>
         </label>
       </div>
 

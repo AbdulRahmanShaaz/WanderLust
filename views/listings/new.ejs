@@ -2,6 +2,7 @@
 layout('layouts/boilerplate');
   pageTitle = 'WanderLust | List Your Place';
   pageCss = '/css/listings/new.css';
+  pageScript = '/js/form-validation.js';
   navActionHref = '/listings';
   navActionLabel = 'All stays';
   footerText = 'WanderLust — curated stays inspired by Airbnb.';
@@ -33,40 +34,46 @@ layout('layouts/boilerplate');
       <p>Complete every field for a professional listing page.</p>
     </div>
 
-    <form action="/listings" method="POST">
+    <form action="/listings" method="POST" class="validated-form" novalidate>
       <div class="field-grid">
         <label class="full">
           Listing title
-          <input type="text" name="listing[title]" placeholder="Oceanfront villa with private deck" required minlength="5" />
+          <input type="text" name="listing[title]" placeholder="Oceanfront villa with private deck" required minlength="5" data-valid-text="Looks clear and specific." />
           <span class="hint">Make it specific and easy to scan.</span>
+          <span class="validation-message" aria-live="polite"></span>
         </label>
 
         <label class="full">
           Description
-          <textarea name="listing[description]" placeholder="Describe the space, guest experience, nearby highlights, and what makes it memorable." required minlength="20"></textarea>
+          <textarea name="listing[description]" placeholder="Describe the space, guest experience, nearby highlights, and what makes it memorable." required minlength="20" data-valid-text="Great, guests have enough detail."></textarea>
           <span class="hint">Mention the setting, comfort, privacy, and standout details.</span>
+          <span class="validation-message" aria-live="polite"></span>
         </label>
 
         <label>
           Location
-          <input type="text" name="listing[location]" placeholder="Goa" required />
+          <input type="text" name="listing[location]" placeholder="Goa" required data-valid-text="Location added." />
+          <span class="validation-message" aria-live="polite"></span>
         </label>
 
         <label>
           Country
-          <input type="text" name="listing[country]" placeholder="India" required />
+          <input type="text" name="listing[country]" placeholder="India" required data-valid-text="Country added." />
+          <span class="validation-message" aria-live="polite"></span>
         </label>
 
         <label>
           Price per night
-          <input type="number" name="listing[price]" placeholder="4500" required min="0" step="1" />
+          <input type="number" name="listing[price]" placeholder="4500" required min="0" step="1" data-valid-text="Price looks good." />
           <span class="hint">Enter the amount without currency symbols.</span>
+          <span class="validation-message" aria-live="polite"></span>
         </label>
 
         <label>
           Image URL
-          <input type="url" name="listing[image]" placeholder="https://images.unsplash.com/..." />
+          <input type="url" name="listing[image]" placeholder="https://images.unsplash.com/..." data-valid-text="Image URL is valid." />
           <span class="hint">Use a direct, publicly accessible image URL.</span>
+          <span class="validation-message" aria-live="polite"></span>
         </label>
       </div>
 

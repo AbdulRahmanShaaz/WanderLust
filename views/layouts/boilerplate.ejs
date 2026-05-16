@@ -15,5 +15,8 @@
     <%- body %>
     <%- include('../includes/footer') %>
   </div>
+  <% if (typeof pageScript !== 'undefined' && pageScript) { %>
+    <script src="<%= pageScript %>"></script>
+  <% } %>
 </body>
 </html>
