@@ -4,6 +4,9 @@ const { connectDB } = require('./db');
 const Listing = require('./models/listing');
 const methodOverride = require('method-override');
 const ejsMate = require('ejs-mate');
+const wrapAsync = require('./utils/wrapAsync');
+const ExpressError = require('./utils/ExpressError');
+const getErrorResponse = require('./utils/getErrorResponse');
 
 const app = express();
 const port = process.env.PORT || 8080;
@@ -18,87 +21,68 @@ app.use(methodOverride('_method'));
 app.get('/', (req, res) => {
   res.redirect('/listings');
 });  
-app.get('/listings', async (req, res) => {
-  try {
-    const listings = await Listing.find();
-    res.render('listings/index', { listings });
-  } catch (err) {
-    console.error('Error fetching listings:', err);
-    res.status(500).send('Internal Server Error');
-  }
-});
+app.get('/listings', wrapAsync(async (req, res) => {
+  const listings = await Listing.find();
+  res.render('listings/index', { listings });
+}));
 
 app.get('/listings/new', (req, res) => {
   res.render('listings/new');
 });
 
-app.post('/listings', async (req, res) => {
-  try {
-    const listing = new Listing(req.body.listing);
-    await listing.save();
-    res.redirect(`/listings/${listing._id}`);
-  } catch (err) {
-    console.error('Error creating listing:', err);
-    res.status(400).send('Unable to create listing. Please check the details and try again.');
+app.post('/listings', wrapAsync(async (req, res) => {
+  const listing = new Listing(req.body.listing);
+  await listing.save();
+  res.redirect(`/listings/${listing._id}`);
+}));
+
+app.get('/listings/:id/edit', wrapAsync(async (req, res) => {
+  const listing = await Listing.findById(req.params.id);
+  if (!listing) {
+    throw new ExpressError(404, 'Listing not found');
   }
+  res.render('listings/edit', { listing });
+}));
+
+app.put('/listings/:id', wrapAsync(async (req, res) => {
+  const listing = await Listing.findByIdAndUpdate(
+    req.params.id,
+    req.body.listing,
+    { new: true, runValidators: true }
+  );
+
+  if (!listing) {
+    throw new ExpressError(404, 'Listing not found');
+  }
+
+  res.redirect(`/listings/${listing._id}`);
+}));
+
+app.delete('/listings/:id', wrapAsync(async (req, res) => {
+  const listing = await Listing.findByIdAndDelete(req.params.id);
+  if (!listing) {
+    throw new ExpressError(404, 'Listing not found');
+  }
+  res.redirect('/listings');
+}));
+
+app.get('/listings/:id', wrapAsync(async (req, res) => {
+  const listing = await Listing.findById(req.params.id);
+  if (!listing) {
+    throw new ExpressError(404, 'Listing not found');
+  }
+  res.render('listings/show', { listing });
+}));
+
+app.all('/{*splat}', (req, res, next) => {
+  next(new ExpressError(404, 'Page not found'));
 });
 
-app.get('/listings/:id/edit', async (req, res) => {
-  try {
-    const listing = await Listing.findById(req.params.id);
-    if (!listing) {
-      return res.status(404).send('Listing not found');
-    }
-    res.render('listings/edit', { listing });
-  } catch (err) {
-    console.error('Error loading edit form:', err);
-    res.status(500).send('Internal Server Error');
-  }
-});
+app.use((err, req, res, next) => {
+  const { statusCode, message } = getErrorResponse(err);
 
-app.put('/listings/:id', async (req, res) => {
-  try {
-    const listing = await Listing.findByIdAndUpdate(
-      req.params.id,
-      req.body.listing,
-      { new: true, runValidators: true }
-    );
-
-    if (!listing) {
-      return res.status(404).send('Listing not found');
-    }
-
-    res.redirect(`/listings/${listing._id}`);
-  } catch (err) {
-    console.error('Error updating listing:', err);
-    res.status(400).send('Unable to update listing. Please check the details and try again.');
-  }
-});
-
-app.delete('/listings/:id', async (req, res) => {
-  try {
-    const listing = await Listing.findByIdAndDelete(req.params.id);
-    if (!listing) {
-      return res.status(404).send('Listing not found');
-    } 
-    res.redirect('/listings');
-  } catch (err) {
-    console.error('Error deleting listing:', err);
-    res.status(500).send('Internal Server Error');
-  }
-});
-
-app.get('/listings/:id', async (req, res) => {
-  try {
-    const listing = await Listing.findById(req.params.id);
-    if (!listing) {
-      return res.status(404).send('Listing not found');
-    }
-    res.render('listings/show', { listing });
-  } catch (err) {
-    console.error('Error fetching listing:', err);
-    res.status(500).send('Internal Server Error');
-  }
+  console.error(err);
+  res.status(statusCode).send(message);
 });
 
 async function start() {
