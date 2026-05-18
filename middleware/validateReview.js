@@ -1,4 +1,4 @@
-const { reviewSchema } = require('../schemas/schema');
+const reviewSchema = require('../schemas/review');
 const ExpressError = require('../utils/ExpressError');
 
 module.exports = (req, res, next) => {

@@ -1,4 +1,4 @@
-const listingSchema = require('../schemas/schema');
+const listingSchema = require('../schemas/listing');
 const ExpressError = require('../utils/ExpressError');
 
 module.exports = (req, res, next) => {
