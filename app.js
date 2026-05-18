@@ -122,6 +122,18 @@ app.post('/listings/:id/reviews', validateReview, wrapAsync(async (req, res) => 
   res.redirect(`/listings/${listing._id}`);
 }));
 
+app.delete('/listings/:id/reviews/:reviewId', wrapAsync(async (req, res) => {
+  const { id, reviewId } = req.params;
+  const listing = await Listing.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
+
+  if (!listing) {
+    throw new ExpressError(404, 'Listing not found');
+  }
+
+  await Review.findByIdAndDelete(reviewId);
+  res.redirect(`/listings/${id}`);
+}));
+
 app.all('/{*splat}', (req, res, next) => {
   next(new ExpressError(404, 'Page not found'));
 });
