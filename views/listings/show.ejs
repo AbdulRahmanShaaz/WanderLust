@@ -2,10 +2,22 @@
 layout('layouts/boilerplate');
   pageTitle = `WanderLust | ${listing.title}`;
   pageCss = '/css/listings/show.css';
+  pageScript = '/js/listings/show.js';
   breadcrumbs = `<a href="/listings">All stays</a><span>·</span><span>${listing.title}</span>`;
   footerText = 'WanderLust — luxury stays crafted for modern journeys.';
 %>
 <% const priceValue = Number(listing.price); const formattedPrice = !Number.isNaN(priceValue) ? priceValue.toLocaleString('en-IN') : 'N/A'; %>
+<%
+  const reviews = typeof visibleReviews !== 'undefined' ? visibleReviews : (listing.reviews || []);
+  const visibleReviewCount = reviews.length;
+  const reviewCount = typeof totalReviews !== 'undefined' ? totalReviews : visibleReviewCount;
+  const visibleLimit = Math.min(4, typeof reviewDisplayLimit !== 'undefined' ? reviewDisplayLimit : 4);
+  const latestReviews = reviews.slice(0, visibleLimit);
+  const ratingLabel = typeof averageRating !== 'undefined' ? averageRating : 'New';
+  const currentReviewPage = typeof reviewPage !== 'undefined' ? reviewPage : 0;
+  const canShowOlderReviews = typeof hasOlderReviews !== 'undefined' ? hasOlderReviews : false;
+  const canShowNewerReviews = typeof hasNewerReviews !== 'undefined' ? hasNewerReviews : false;
+%>
 
 <section class="hero">
   <div class="hero-card">
@@ -34,7 +46,7 @@ layout('layouts/boilerplate');
         </div>
         <div class="overview-card">
           <strong>Guest rating</strong>
-          <span>5.0 / 5</span>
+          <span><%= ratingLabel %><%= reviewCount ? ' / 5' : '' %></span>
         </div>
       </div>
 
@@ -56,7 +68,7 @@ layout('layouts/boilerplate');
         <a href="/listings" class="btn-secondary">Back to listings</a>
         <a href="/listings/<%= listing._id %>/edit" class="btn-secondary">Edit listing</a>
         <button class="btn-primary">Request booking</button>
-        <form class="delete-form" action="/listings/<%= listing._id %>?_method=DELETE" method="POST" onsubmit="return confirm('Delete this listing permanently?');">
+        <form class="delete-form" action="/listings/<%= listing._id %>?_method=DELETE" method="POST" data-delete-form>
           <button type="submit" class="btn-danger">Delete listing</button>
         </form>
       </div>
@@ -87,6 +99,74 @@ layout('layouts/boilerplate');
   <p><%= listing.description || 'This premium property offers an elevated stay experience with modern style, thoughtful amenities, and a location that feels both exclusive and effortlessly accessible.' %></p>
 </section>
 
+<section class="section reviews-section">
+  <div class="reviews-header">
+    <div>
+      <h2>Guest reviews</h2>
+      <p>
+        Showing latest <%= latestReviews.length %> of <%= reviewCount %> review<%= reviewCount === 1 ? '' : 's' %>.
+      </p>
+    </div>
+    <div class="reviews-summary">
+      <span class="rating-pill"><%= ratingLabel %><%= reviewCount ? ' / 5' : '' %></span>
+      <span><%= reviewCount %> total</span>
+    </div>
+  </div>
+
+  <div class="reviews-layout">
+    <form class="review-form" action="/listings/<%= listing._id %>/reviews" method="POST">
+      <h3>Add a review</h3>
+      <label for="rating">Rating</label>
+      <select id="rating" name="review[rating]" required>
+        <option value="5">5 - Excellent</option>
+        <option value="4">4 - Great</option>
+        <option value="3">3 - Good</option>
+        <option value="2">2 - Fair</option>
+        <option value="1">1 - Poor</option>
+      </select>
+
+      <label for="comment">Comment</label>
+      <textarea id="comment" name="review[comment]" rows="4" minlength="5" required placeholder="Share your stay experience"></textarea>
+
+      <button type="submit" class="btn-primary">Add review</button>
+    </form>
+
+    <div class="reviews-list">
+      <% if (latestReviews.length) { %>
+        <% latestReviews.forEach((review, index) => { %>
+          <article class="review-item">
+            <div class="review-topline">
+              <div class="reviewer">
+                <span class="reviewer-avatar">G<%= index + 1 %></span>
+                <div>
+                  <strong>Guest review</strong>
+                  <% if (review.createdAt) { %>
+                    <span><%= review.createdAt.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) %></span>
+                  <% } %>
+                </div>
+              </div>
+              <span class="review-rating"><%= review.rating %> / 5</span>
+            </div>
+            <p><%= review.comment %></p>
+          </article>
+        <% }) %>
+      <% } else { %>
+        <p class="empty-reviews">No reviews yet. Add the first one and it will be saved to MongoDB.</p>
+      <% } %>
+    </div>
+  </div>
+  <% if (reviewCount > visibleLimit) { %>
+    <div class="review-page-actions">
+      <% if (canShowNewerReviews) { %>
+        <a class="btn-secondary" href="/listings/<%= listing._id %><%= currentReviewPage - 1 > 0 ? `?reviewsPage=${currentReviewPage - 1}` : '' %>">Show newer reviews</a>
+      <% } %>
+      <% if (canShowOlderReviews) { %>
+        <a class="btn-secondary" href="/listings/<%= listing._id %>?reviewsPage=<%= currentReviewPage + 1 %>">Show older reviews</a>
+      <% } %>
+    </div>
+  <% } %>
+</section>
+
 <section class="section location-card">
   <small>Location overview</small>
   <p><strong><%= listing.location || 'Location information unavailable' %></strong></p>
@@ -94,3 +174,17 @@ layout('layouts/boilerplate');
     <p><strong>Country</strong> • <%= listing.country %></p>
   <% } %>
 </section>
+
+<div class="modal-backdrop" data-delete-modal hidden>
+  <div class="confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="delete-dialog-title" aria-describedby="delete-dialog-description">
+    <div class="confirm-icon" aria-hidden="true">!</div>
+    <div class="confirm-copy">
+      <h2 id="delete-dialog-title">Delete this listing?</h2>
+      <p id="delete-dialog-description">This will permanently remove "<%= listing.title %>" and its reviews from your database.</p>
+    </div>
+    <div class="confirm-actions">
+      <button type="button" class="btn-secondary" data-cancel-delete>Keep listing</button>
+      <button type="button" class="btn-danger confirm-delete-btn" data-confirm-delete>Delete permanently</button>
+    </div>
+  </div>
+</div>

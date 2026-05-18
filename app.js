@@ -2,12 +2,14 @@ const express = require('express');
 const path = require('path');
 const { connectDB } = require('./db');
 const Listing = require('./models/listing');
+const Review = require('./models/reviews');
 const methodOverride = require('method-override');
 const ejsMate = require('ejs-mate');
 const wrapAsync = require('./utils/wrapAsync');
 const ExpressError = require('./utils/ExpressError');
 const getErrorResponse = require('./utils/getErrorResponse');
 const validateListing = require('./middleware/validateListing');
+const validateReview = require('./middleware/validateReview');
 
 const app = express();
 const port = process.env.PORT || 8080;
@@ -68,11 +70,56 @@ app.delete('/listings/:id', wrapAsync(async (req, res) => {
 }));
 
 app.get('/listings/:id', wrapAsync(async (req, res) => {
+  const reviewDisplayLimit = 4;
+  const reviewPage = Math.max(parseInt(req.query.reviewsPage, 10) || 0, 0);
   const listing = await Listing.findById(req.params.id);
   if (!listing) {
     throw new ExpressError(404, 'Listing not found');
   }
-  res.render('listings/show', { listing });
+
+  const totalReviews = listing.reviews.length;
+  const ratingStats = totalReviews
+    ? await Review.aggregate([
+      { $match: { _id: { $in: listing.reviews } } },
+      { $group: { _id: null, averageRating: { $avg: '$rating' } } },
+    ])
+    : [];
+
+  const visibleReviews = totalReviews
+    ? await Review.find({ _id: { $in: listing.reviews } })
+      .sort({ createdAt: -1 })
+      .skip(reviewPage * reviewDisplayLimit)
+      .limit(reviewDisplayLimit)
+    : [];
+
+  const averageRating = ratingStats.length
+    ? ratingStats[0].averageRating.toFixed(1)
+    : 'New';
+
+  res.render('listings/show', {
+    listing,
+    averageRating,
+    totalReviews,
+    reviewDisplayLimit,
+    reviewPage,
+    visibleReviews,
+    hasOlderReviews: (reviewPage + 1) * reviewDisplayLimit < totalReviews,
+    hasNewerReviews: reviewPage > 0,
+  });
+}));
+
+app.post('/listings/:id/reviews', validateReview, wrapAsync(async (req, res) => {
+  const listing = await Listing.findById(req.params.id);
+  if (!listing) {
+    throw new ExpressError(404, 'Listing not found');
+  }
+
+  const review = new Review(req.body.review);
+  await review.save();
+  listing.reviews.push(review);
+  await listing.save();
+
+  res.redirect(`/listings/${listing._id}`);
 }));
 
 app.all('/{*splat}', (req, res, next) => {
