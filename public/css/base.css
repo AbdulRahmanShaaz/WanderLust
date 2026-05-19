@@ -92,12 +92,116 @@
       white-space: nowrap;
     }
 
+    .nav-auth-form {
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0.7rem;
+      margin: 0;
+    }
+
+    .nav-auth-form .nav-action {
+      cursor: pointer;
+      font: inherit;
+      font-weight: 700;
+    }
+
+    .nav-user {
+      max-width: 12rem;
+      overflow: hidden;
+      color: #3a4f71;
+      font-size: 0.88rem;
+      font-weight: 800;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
     .breadcrumbs {
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
       color: var(--muted);
       font-size: 0.95rem;
+    }
+
+    .flash-stack {
+      display: grid;
+      gap: 0.75rem;
+      margin: 0 0 1.25rem;
+    }
+
+    .flash {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.85rem 1rem;
+      border-radius: 12px;
+      border: 1px solid transparent;
+      font-weight: 800;
+      line-height: 1.45;
+      box-shadow: 0 14px 32px rgba(21, 34, 72, 0.06);
+      max-height: 160px;
+      transition: opacity 0.18s ease, transform 0.18s ease, max-height 0.18s ease, margin 0.18s ease, padding 0.18s ease;
+      overflow: hidden;
+    }
+
+    .flash span {
+      min-width: 0;
+    }
+
+    .flash-dismiss {
+      width: 1.9rem;
+      height: 1.9rem;
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin: -0.25rem -0.35rem -0.25rem 0;
+      border: 1px solid currentColor;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.52);
+      color: inherit;
+      cursor: pointer;
+      font: inherit;
+      font-size: 1.15rem;
+      font-weight: 900;
+      line-height: 1;
+      opacity: 0.66;
+      transition: opacity 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .flash-dismiss:hover,
+    .flash-dismiss:focus-visible {
+      opacity: 1;
+      background: rgba(255, 255, 255, 0.82);
+      transform: translateY(-1px);
+    }
+
+    .flash-dismiss:focus-visible {
+      outline: 3px solid rgba(31, 87, 217, 0.2);
+      outline-offset: 2px;
+    }
+
+    .flash-dismissed {
+      max-height: 0;
+      margin: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+
+    .flash-success {
+      background: #f0fbf5;
+      border-color: #bce8ce;
+      color: #12643f;
+    }
+
+    .flash-error {
+      background: #fff5f5;
+      border-color: #ffd0d0;
+      color: #b42323;
     }
 
     .site-footer {
@@ -202,6 +306,10 @@
       }
 
       .main-nav {
+        justify-content: flex-start;
+      }
+
+      .nav-auth-form {
         justify-content: flex-start;
       }
 

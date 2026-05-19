@@ -20,7 +20,12 @@
     <a href="<%= navActionHref %>" class="nav-action"><%= navActionLabel %></a>
   <% } else if (typeof breadcrumbs !== 'undefined' && breadcrumbs) { %>
     <div class="breadcrumbs"><%- breadcrumbs %></div>
+  <% } else if (currentUser) { %>
+    <form action="/logout" method="POST" class="nav-auth-form">
+      <span class="nav-user"><%= currentUser.username %></span>
+      <button type="submit" class="nav-action">Sign out</button>
+    </form>
   <% } else { %>
-    <a href="/listings/new" class="nav-action">Host Dashboard</a>
+    <a href="/signup" class="nav-action">Sign up</a>
   <% } %>
 </header>

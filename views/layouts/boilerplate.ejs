@@ -12,9 +12,11 @@
 <body>
   <div class="page">
     <%- include('../includes/navbar') %>
+    <%- include('../includes/flash') %>
     <%- body %>
     <%- include('../includes/footer') %>
   </div>
+  <script src="/js/flash.js"></script>
   <% if (typeof pageScript !== 'undefined' && pageScript) { %>
     <script src="<%= pageScript %>"></script>
   <% } %>

@@ -115,18 +115,36 @@ layout('layouts/boilerplate');
 
   <div class="reviews-layout">
     <form class="review-form" action="/listings/<%= listing._id %>/reviews" method="POST">
-      <h3>Add a review</h3>
-      <label for="rating">Rating</label>
-      <select id="rating" name="review[rating]" required>
-        <option value="5">5 - Excellent</option>
-        <option value="4">4 - Great</option>
-        <option value="3">3 - Good</option>
-        <option value="2">2 - Fair</option>
-        <option value="1">1 - Poor</option>
-      </select>
+      <div class="review-form-header">
+        <h3>Add a review</h3>
+        <span>Guest feedback</span>
+      </div>
 
-      <label for="comment">Comment</label>
-      <textarea id="comment" name="review[comment]" rows="4" minlength="5" required placeholder="Share your stay experience"></textarea>
+      <fieldset class="rating-field">
+        <legend>Rating</legend>
+        <div class="rating-options">
+          <% [
+            { value: 5, label: 'Excellent' },
+            { value: 4, label: 'Great' },
+            { value: 3, label: 'Good' },
+            { value: 2, label: 'Fair' },
+            { value: 1, label: 'Poor' },
+          ].forEach(({ value, label }) => { %>
+            <label class="rating-option">
+              <input type="radio" name="review[rating]" value="<%= value %>" <%= value === 5 ? 'checked' : '' %> required />
+              <span>
+                <strong><%= value %></strong>
+                <small><%= label %></small>
+              </span>
+            </label>
+          <% }) %>
+        </div>
+      </fieldset>
+
+      <div class="review-field">
+        <label for="comment">Comment</label>
+        <textarea id="comment" name="review[comment]" rows="4" minlength="5" required placeholder="Share your stay experience"></textarea>
+      </div>
 
       <button type="submit" class="btn-primary">Add review</button>
     </form>

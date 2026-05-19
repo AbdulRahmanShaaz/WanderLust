@@ -8,13 +8,21 @@ const getInvalidText = (field) => {
   if (field.validity.rangeUnderflow) {
     return `Value must be at least ${field.min}.`;
   }
-  if (field.validity.typeMismatch) return 'Please enter a valid URL.';
+  if (field.validity.patternMismatch) return field.title || 'Please match the requested format.';
+  if (field.validity.typeMismatch) {
+    return field.type === 'email' ? 'Please enter a valid email address.' : 'Please enter a valid URL.';
+  }
   return 'Please check this field.';
 };
 
 const updateFieldState = (field, showEmptySuccess = false) => {
   const message = field.closest('label')?.querySelector('.validation-message');
   if (!message) return field.checkValidity();
+
+  if (field.dataset.match) {
+    const target = field.form?.elements[field.dataset.match];
+    field.setCustomValidity(target && field.value !== target.value ? field.dataset.matchMessage || 'Values do not match.' : '');
+  }
 
   const hasValue = field.value.trim() !== '';
   const isOptionalAndEmpty = !field.required && !hasValue;
@@ -44,7 +52,10 @@ forms.forEach((form) => {
   const fields = form.querySelectorAll('input, textarea');
 
   fields.forEach((field) => {
-    field.addEventListener('input', () => updateFieldState(field));
+    field.addEventListener('input', () => {
+      updateFieldState(field);
+      form.querySelectorAll(`[data-match="${field.name}"]`).forEach((matchField) => updateFieldState(matchField));
+    });
     field.addEventListener('blur', () => updateFieldState(field));
   });
 

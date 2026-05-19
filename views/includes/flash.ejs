@@ -1,0 +1,21 @@
+<% if (success && success.length) { %>
+  <div class="flash-stack" aria-live="polite">
+    <% success.forEach(message => { %>
+      <div class="flash flash-success">
+        <span><%= message %></span>
+        <button type="button" class="flash-dismiss" aria-label="Dismiss message" data-flash-dismiss>&times;</button>
+      </div>
+    <% }) %>
+  </div>
+<% } %>
+
+<% if (error && error.length) { %>
+  <div class="flash-stack" aria-live="assertive">
+    <% error.forEach(message => { %>
+      <div class="flash flash-error">
+        <span><%= message %></span>
+        <button type="button" class="flash-dismiss" aria-label="Dismiss message" data-flash-dismiss>&times;</button>
+      </div>
+    <% }) %>
+  </div>
+<% } %>

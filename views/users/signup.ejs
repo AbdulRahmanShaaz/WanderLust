@@ -1,0 +1,115 @@
+<%
+layout('layouts/boilerplate');
+  pageTitle = 'WanderLust | Create Account';
+  pageCss = '/css/users/signup.css';
+  pageScript = '/js/form-validation.js';
+  navActionHref = '/listings';
+  navActionLabel = 'Browse stays';
+  navSubtitle = 'Create your traveler profile';
+  footerText = 'WanderLust · Join once, discover stays everywhere.';
+%>
+
+<main class="signup-shell">
+  <section class="signup-intro" aria-labelledby="signup-title">
+    <span class="eyebrow">WanderLust account</span>
+    <h1 id="signup-title">Start planning stays with a profile guests and hosts can trust.</h1>
+    <p>Save favorite homes, review stays, and prepare for host-ready tools as your travel plans grow.</p>
+
+    <div class="benefit-list" aria-label="Account benefits">
+      <div class="benefit">
+        <span class="benefit-marker">01</span>
+        <div>
+          <strong>Personalized access</strong>
+          Keep your travel identity ready across listings and future bookings.
+        </div>
+      </div>
+      <div class="benefit">
+        <span class="benefit-marker">02</span>
+        <div>
+          <strong>Secure by default</strong>
+          Passwords are stored with Passport's local authentication strategy.
+        </div>
+      </div>
+      <div class="benefit">
+        <span class="benefit-marker">03</span>
+        <div>
+          <strong>One smooth entry</strong>
+          After signup, you are signed in and sent straight back to the stays.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="signup-panel" aria-label="Create account form">
+    <div class="form-header">
+      <h2>Create your account</h2>
+      <p>Use an email you can access and a strong password.</p>
+    </div>
+
+    <form action="/signup" method="POST" class="validated-form" novalidate>
+      <label>
+        Username
+        <input
+          type="text"
+          name="user[username]"
+          placeholder="abdul_travels"
+          autocomplete="username"
+          required
+          minlength="3"
+          maxlength="30"
+          pattern="^[A-Za-z0-9_]+$"
+          title="Use letters, numbers, or underscores only."
+          data-valid-text="Username is available to submit."
+        />
+        <span class="hint">Use 3-30 letters, numbers, or underscores.</span>
+        <span class="validation-message" aria-live="polite"></span>
+      </label>
+
+      <label>
+        Email address
+        <input
+          type="email"
+          name="user[email]"
+          placeholder="you@example.com"
+          autocomplete="email"
+          required
+          data-valid-text="Email format looks right."
+        />
+        <span class="validation-message" aria-live="polite"></span>
+      </label>
+
+      <label>
+        Password
+        <input
+          type="password"
+          name="user[password]"
+          placeholder="Create a strong password"
+          autocomplete="new-password"
+          required
+          minlength="8"
+          data-valid-text="Password length is strong enough."
+        />
+        <span class="hint">Use at least 8 characters.</span>
+        <span class="validation-message" aria-live="polite"></span>
+      </label>
+
+      <label>
+        Confirm password
+        <input
+          type="password"
+          name="user[confirmPassword]"
+          placeholder="Re-enter your password"
+          autocomplete="new-password"
+          required
+          minlength="8"
+          data-match="user[password]"
+          data-match-message="Passwords do not match."
+          data-valid-text="Ready to create your account."
+        />
+        <span class="validation-message" aria-live="polite"></span>
+      </label>
+
+      <button type="submit" class="btn-primary">Create account</button>
+    </form>
+  </section>
+</main>

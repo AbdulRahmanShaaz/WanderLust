@@ -14,6 +14,7 @@ module.exports.renderNewForm = (req, res) => {
 module.exports.createListing = async (req, res) => {
   const listing = new Listing(req.body.listing);
   await listing.save();
+  req.flash('success', 'New listing created successfully.');
   res.redirect(`/listings/${listing._id}`);
 };
 
@@ -78,6 +79,7 @@ module.exports.updateListing = async (req, res) => {
     throw new ExpressError(404, 'Listing not found');
   }
 
+  req.flash('success', 'Listing updated successfully.');
   res.redirect(`/listings/${listing._id}`);
 };
 
@@ -88,5 +90,6 @@ module.exports.destroyListing = async (req, res) => {
     throw new ExpressError(404, 'Listing not found');
   }
 
+  req.flash('success', 'Listing deleted successfully.');
   res.redirect('/listings');
 };
