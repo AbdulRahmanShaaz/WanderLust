@@ -1,31 +1,42 @@
 <header class="topbar">
-  <div>
-    <div class="brand">WanderLust</div>
-    <div class="tagline"><%= typeof navSubtitle !== 'undefined' ? navSubtitle : 'Premium stays for modern travelers' %></div>
+  <div class="nav-left">
+    <a href="/listings" class="brand">
+      <svg class="brand-icon" viewBox="0 0 40 40" width="34" height="34" xmlns="http://www.w3.org/2000/svg">
+        <path d="M20,2 C11.5,2 5,8.5 5,17 C5,27 20,38 20,38 C20,38 35,27 35,17 C35,8.5 28.5,2 20,2 Z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round" />
+        <path d="M 12,15 L 16,23 L 20,17 L 24,23 L 28,15" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+      <span class="brand-text">WanderLust</span>
+    </a>
   </div>
-  <% const navLinks = typeof navItems !== 'undefined' && Array.isArray(navItems)
-    ? navItems
-    : [
-        { label: 'Stays', href: '/listings' },
-        { label: 'List Property', href: '/listings/new' },
-        { label: 'Travel Support', href: '#' },
-        { label: 'Saved Plans', href: '#' }
-      ]; %>
-  <nav class="main-nav" aria-label="Primary">
-    <% navLinks.forEach(item => { %>
-      <a class="main-nav__link" href="<%= item.href %>"><%= item.label %></a>
-    <% }) %>
-  </nav>
-  <% if (typeof navActionHref !== 'undefined' && navActionHref && typeof navActionLabel !== 'undefined' && navActionLabel) { %>
-    <a href="<%= navActionHref %>" class="nav-action"><%= navActionLabel %></a>
-  <% } else if (typeof breadcrumbs !== 'undefined' && breadcrumbs) { %>
-    <div class="breadcrumbs"><%- breadcrumbs %></div>
-  <% } else if (currentUser) { %>
-    <form action="/logout" method="POST" class="nav-auth-form">
-      <span class="nav-user"><%= currentUser.username %></span>
-      <button type="submit" class="nav-action">Sign out</button>
-    </form>
-  <% } else { %>
-    <a href="/signup" class="nav-action">Sign up</a>
-  <% } %>
+
+  <div class="nav-center">
+    <div class="search-pill">
+      <button type="button">Anywhere</button>
+      <div class="divider"></div>
+      <button type="button">Any week</button>
+      <div class="divider"></div>
+      <button type="button" class="guest-btn">Add guests</button>
+      <button class="search-icon-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+    </div>
+  </div>
+
+  <div class="nav-right">
+    <a href="/listings/new" class="host-link">WanderLust your home</a>
+    
+    <% if (currentUser) { %>
+      <form action="/logout" method="POST" style="margin: 0; display: inline;">
+        <div class="user-menu" onclick="this.parentNode.submit();" title="Log out">
+          <i class="fa-solid fa-bars"></i>
+          <div class="avatar"><i class="fa-solid fa-user"></i></div>
+        </div>
+      </form>
+    <% } else { %>
+      <a href="/signup" style="text-decoration: none; color: inherit;">
+        <div class="user-menu">
+          <i class="fa-solid fa-bars"></i>
+          <div class="avatar"><i class="fa-solid fa-user"></i></div>
+        </div>
+      </a>
+    <% } %>
+  </div>
 </header>

@@ -15,7 +15,7 @@
   border: 1px solid var(--border);
   border-radius: 24px;
   background:
-    linear-gradient(180deg, rgba(13, 32, 55, 0.1), rgba(13, 32, 55, 0.82)),
+    linear-gradient(180deg, rgba(31, 37, 32, 0.08), rgba(31, 37, 32, 0.82)),
     url("https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1400&q=80") center/cover;
   color: #fff;
   box-shadow: var(--shadow);
@@ -93,7 +93,7 @@
 .signup-panel {
   border: 1px solid var(--border);
   border-radius: 24px;
-  background: var(--surface);
+  background: rgba(255, 255, 255, 0.92);
   box-shadow: var(--shadow);
   overflow: hidden;
 }
@@ -101,6 +101,7 @@
 .form-header {
   padding: 1.6rem 1.7rem;
   border-bottom: 1px solid var(--border);
+  background: var(--surface-soft);
 }
 
 .form-header h2 {
@@ -134,7 +135,7 @@ input {
   min-height: 50px;
   border: 1px solid var(--border);
   border-radius: 14px;
-  background: #f8fafd;
+  background: #fff;
   color: var(--text);
   font: inherit;
   padding: 0.92rem 1rem;
@@ -144,8 +145,8 @@ input {
 
 input:focus {
   background: #fff;
-  border-color: rgba(15, 76, 129, 0.48);
-  box-shadow: 0 0 0 4px rgba(15, 76, 129, 0.08);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(47, 107, 95, 0.1);
 }
 
 .hint {

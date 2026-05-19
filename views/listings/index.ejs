@@ -7,14 +7,72 @@ layout('layouts/boilerplate');
   footerText = 'WanderLust — curated stays inspired by Airbnb.';
 %>
 <section class="hero">
-  <div class="hero-content">
-    <h1>Stay somewhere exceptional, every time.</h1>
-    <p>Explore a curated collection of vacation homes and luxury retreats with beautiful design, inspiring locations, and effortless booking.</p>
+  <div class="hero-copy">
+    <span class="eyebrow">Homes, hideaways, and city stays</span>
+    <h1>Travel better with stays that feel curated, calm, and confident.</h1>
+    <p>Discover beautifully styled homes, modern urban escapes, and immersive retreats across top destinations.</p>
+    <div class="hero-highlights">
+      <article class="highlight-card">
+        <strong>Verified hosts</strong>
+        <p>Choose trusted stays with transparent pricing and joyful hospitality.</p>
+      </article>
+      <article class="highlight-card">
+        <strong>Flexible stays</strong>
+        <p>Book weekend escapes, work trips, and longer getaways with ease.</p>
+      </article>
+      <article class="highlight-card">
+        <strong>Premium comfort</strong>
+        <p>Enjoy mindful spaces designed for relaxation, productivity, and memorable travel.</p>
+      </article>
+    </div>
   </div>
-  <div class="hero-actions">
-    <span class="pill">Coastal escapes</span>
-    <span class="pill">Urban retreats</span>
-    <span class="pill">Scenic hideaways</span>
+
+  <div class="hero-panel" aria-label="Trip search preview">
+    <div class="search-card">
+      <label>
+        Where
+        <span>Goa, Manali, Jaipur, Mumbai</span>
+      </label>
+      <label>
+        When
+        <span>Flexible dates</span>
+      </label>
+      <label>
+        Guests
+        <span>2 travelers</span>
+      </label>
+      <a href="#available-stays" class="search-button">Explore stays</a>
+    </div>
+    <div class="hero-stats">
+      <span><strong><%= listings ? listings.length : 0 %></strong> stays</span>
+      <span><strong>Verified</strong> hosts</span>
+      <span><strong>₹</strong> clear pricing</span>
+    </div>
+  </div>
+</section>
+
+<section class="featured-categories">
+  <div class="section-heading categories-heading">
+    <div>
+      <span class="section-kicker">Book with confidence</span>
+      <h2>Stays designed for every journey</h2>
+      <p>Choose your next stay from curated categories built for comfort, convenience, and unforgettable travel.</p>
+    </div>
+    <a href="#available-stays" class="search-button">Browse stays</a>
+  </div>
+  <div class="destination-grid">
+    <article class="destination-card">
+      <h3>Beachfront escapes</h3>
+      <p>Bright coastal homes with ocean views, easy access to local dining, and peaceful seaside style.</p>
+    </article>
+    <article class="destination-card">
+      <h3>City style homes</h3>
+      <p>Chic apartments and modern studios in the heart of vibrant cities, perfect for urban explorers.</p>
+    </article>
+    <article class="destination-card">
+      <h3>Mountain retreats</h3>
+      <p>Cozy cabins, scenic hideaways, and tranquil lodges for travellers who want adventure with comfort.</p>
+    </article>
   </div>
 </section>
 
@@ -25,29 +83,35 @@ layout('layouts/boilerplate');
       <p>We are waiting for more homes to arrive. Seed the database or check back once the listings are loaded.</p>
     </section>
   <% } else { %>
-    <div class="section-heading">
+    <div class="section-heading" id="available-stays">
       <div>
+        <span class="section-kicker">Curated for travel</span>
         <h2>Available stays</h2>
-        <p><%= listings.length %> curated places ready for your next trip.</p>
+        <p><%= listings.length %> homes ready for guests who care about comfort, location, and style.</p>
       </div>
     </div>
     <section class="listings-grid">
       <% listings.forEach(listing => { %>
         <% const listingPrice = Number(listing.price); const formattedListingPrice = !Number.isNaN(listingPrice) ? listingPrice.toLocaleString('en-IN') : 'N/A'; const defaultImage = 'https://images.unsplash.com/photo-1625505826533-5c80aca7d157?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'; const listingImage = listing.image && listing.image.url ? listing.image.url : listing.image; %>
         <article class="card">
-          <img class="card__image" src="<%= listingImage || defaultImage %>" alt="<%= listing.title %>" onerror="this.onerror=null;this.src='<%= defaultImage %>'" />
+          <a class="card__media" href="/listings/<%= listing._id %>" aria-label="View <%= listing.title %>">
+            <img class="card__image" src="<%= listingImage || defaultImage %>" alt="<%= listing.title %>" onerror="this.onerror=null;this.src='<%= defaultImage %>'" />
+            <span class="card__price">₹<%= formattedListingPrice %> / night</span>
+          </a>
           <div class="card__body">
-            <span class="card__badge"><%= listing.country %></span>
+            <div class="card__topline">
+              <span class="card__badge"><%= listing.country %></span>
+              <span class="card__rating">New</span>
+            </div>
             <div>
               <h2 class="card__title"><%= listing.title %></h2>
               <div class="card__meta">
                 <span><strong><%= listing.location %></strong></span>
-                <span class="price">₹<%= formattedListingPrice %> / night</span>
               </div>
             </div>
             <p class="card__desc"><%= listing.description %></p>
             <div class="card__footer">
-              <span>Verified host</span>
+              <span>Hosted stay</span>
               <a href="/listings/<%= listing._id %>" class="card__action">View stay</a>
             </div>
           </div>

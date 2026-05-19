@@ -3,8 +3,6 @@ layout('layouts/boilerplate');
   pageTitle = `WanderLust | ${listing.title}`;
   pageCss = '/css/listings/show.css';
   pageScript = '/js/listings/show.js';
-  breadcrumbs = `<a href="/listings">All stays</a><span>·</span><span>${listing.title}</span>`;
-  footerText = 'WanderLust — luxury stays crafted for modern journeys.';
 %>
 <% const priceValue = Number(listing.price); const formattedPrice = !Number.isNaN(priceValue) ? priceValue.toLocaleString('en-IN') : 'N/A'; %>
 <%
@@ -14,198 +12,192 @@ layout('layouts/boilerplate');
   const visibleLimit = Math.min(4, typeof reviewDisplayLimit !== 'undefined' ? reviewDisplayLimit : 4);
   const latestReviews = reviews.slice(0, visibleLimit);
   const ratingLabel = typeof averageRating !== 'undefined' ? averageRating : 'New';
-  const currentReviewPage = typeof reviewPage !== 'undefined' ? reviewPage : 0;
-  const canShowOlderReviews = typeof hasOlderReviews !== 'undefined' ? hasOlderReviews : false;
-  const canShowNewerReviews = typeof hasNewerReviews !== 'undefined' ? hasNewerReviews : false;
 %>
 
-<section class="hero">
-  <div class="hero-card">
-    <% const defaultImage = 'https://images.unsplash.com/photo-1625505826533-5c80aca7d157?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'; const listingImage = listing.image && listing.image.url ? listing.image.url : listing.image; %>
-    <img src="<%= listingImage || defaultImage %>" alt="<%= listing.title %>" onerror="this.onerror=null;this.src='<%= defaultImage %>'" />
-  </div>
-
-  <div class="hero-panel">
-    <div class="tagline-box">Premium collection</div>
+<div class="listing-container">
+  <div class="listing-header">
     <h1><%= listing.title %></h1>
-    <p><%= listing.description || 'A carefully curated stay with exceptional attention to detail, modern amenities, and seamless service for your next getaway.' %></p>
-
-    <div class="overview">
-      <div class="overview-grid">
-        <div class="overview-card">
-          <strong>Location</strong>
-          <span><%= listing.location || 'Global destination' %></span>
-        </div>
-        <div class="overview-card">
-          <strong>Country</strong>
-          <span><%= listing.country || 'Worldwide' %></span>
-        </div>
-        <div class="overview-card">
-          <strong>Price per night</strong>
-          <span>₹<%= formattedPrice %> <small>/ night</small></span>
-        </div>
-        <div class="overview-card">
-          <strong>Guest rating</strong>
-          <span><%= ratingLabel %><%= reviewCount ? ' / 5' : '' %></span>
-        </div>
+    <div class="listing-header-meta">
+      <div class="meta-left">
+        <span class="rating-star"><i class="fa-solid fa-star"></i> <%= ratingLabel %></span>
+        <% if(reviewCount > 0) { %>
+          <span class="meta-dot">·</span>
+          <a href="#reviews" class="review-link"><%= reviewCount %> review<%= reviewCount === 1 ? '' : 's' %></a>
+        <% } %>
+        <span class="meta-dot">·</span>
+        <span class="location-link"><i class="fa-solid fa-location-dot"></i> <%= listing.location %>, <%= listing.country %></span>
       </div>
-
-      <div class="section">
-        <h2>Property details</h2>
-        <p>Enjoy effortless luxury in a space designed for comfort, privacy, and polished hospitality. Every detail is tailored to exceed expectations.</p>
-      </div>
-    </div>
-
-    <div class="cta-panel">
-      <p class="price-tag">₹<%= formattedPrice %><small> / night</small></p>
-      <p class="price-subtitle">Instant booking available with trusted host verification.</p>
-      <div class="badge-row">
-        <span class="badge">Verified host</span>
-        <span class="badge">Corporate ready</span>
-        <span class="badge">Premium support</span>
-      </div>
-      <div class="actions">
-        <a href="/listings" class="btn-secondary">Back to listings</a>
-        <a href="/listings/<%= listing._id %>/edit" class="btn-secondary">Edit listing</a>
-        <button class="btn-primary">Request booking</button>
-        <form class="delete-form" action="/listings/<%= listing._id %>?_method=DELETE" method="POST" data-delete-form>
-          <button type="submit" class="btn-danger">Delete listing</button>
-        </form>
+      <div class="meta-right">
+        <a href="/listings" class="share-btn"><i class="fa-solid fa-arrow-left"></i> Back to listings</a>
       </div>
     </div>
   </div>
-</section>
 
-<section class="section">
-  <h2>Highlights</h2>
-  <div class="detail-list">
-    <div class="detail-item">
-      <strong>Best for</strong>
-      <span>Executive retreats</span>
-    </div>
-    <div class="detail-item">
-      <strong>Ideal guest</strong>
-      <span>Business travelers & refined guests</span>
-    </div>
-    <div class="detail-item">
-      <strong>Host quality</strong>
-      <span>5-star service</span>
-    </div>
-  </div>
-</section>
+  <section class="listing-gallery">
+    <% const defaultImage = 'https://images.unsplash.com/photo-1625505826533-5c80aca7d157?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80'; const listingImage = listing.image && listing.image.url ? listing.image.url : listing.image; %>
+    <img src="<%= listingImage || defaultImage %>" alt="<%= listing.title %>" onerror="this.onerror=null;this.src='<%= defaultImage %>'" />
+  </section>
 
-<section class="section">
-  <h2>More about this stay</h2>
-  <p><%= listing.description || 'This premium property offers an elevated stay experience with modern style, thoughtful amenities, and a location that feels both exclusive and effortlessly accessible.' %></p>
-</section>
-
-<section class="section reviews-section">
-  <div class="reviews-header">
-    <div>
-      <h2>Guest reviews</h2>
-      <p>
-        Showing latest <%= latestReviews.length %> of <%= reviewCount %> review<%= reviewCount === 1 ? '' : 's' %>.
-      </p>
-    </div>
-    <div class="reviews-summary">
-      <span class="rating-pill"><%= ratingLabel %><%= reviewCount ? ' / 5' : '' %></span>
-      <span><%= reviewCount %> total</span>
-    </div>
-  </div>
-
-  <div class="reviews-layout">
-    <form class="review-form" action="/listings/<%= listing._id %>/reviews" method="POST">
-      <div class="review-form-header">
-        <h3>Add a review</h3>
-        <span>Guest feedback</span>
-      </div>
-
-      <fieldset class="rating-field">
-        <legend>Rating</legend>
-        <div class="rating-options">
-          <% [
-            { value: 5, label: 'Excellent' },
-            { value: 4, label: 'Great' },
-            { value: 3, label: 'Good' },
-            { value: 2, label: 'Fair' },
-            { value: 1, label: 'Poor' },
-          ].forEach(({ value, label }) => { %>
-            <label class="rating-option">
-              <input type="radio" name="review[rating]" value="<%= value %>" <%= value === 5 ? 'checked' : '' %> required />
-              <span>
-                <strong><%= value %></strong>
-                <small><%= label %></small>
-              </span>
-            </label>
-          <% }) %>
+  <div class="listing-body">
+    <div class="listing-main">
+      <div class="listing-host-summary section-divider">
+        <div class="host-text">
+          <h2>Entire home hosted by WanderLust</h2>
+          <p>4 guests · 2 bedrooms · 2 beds · 1 bath</p>
         </div>
-      </fieldset>
-
-      <div class="review-field">
-        <label for="comment">Comment</label>
-        <textarea id="comment" name="review[comment]" rows="4" minlength="5" required placeholder="Share your stay experience"></textarea>
+        <div class="host-avatar">
+          <span>W</span>
+        </div>
       </div>
 
-      <button type="submit" class="btn-primary">Add review</button>
-    </form>
+      <div class="listing-highlights section-divider">
+        <div class="highlight-item">
+          <i class="fa-solid fa-medal"></i>
+          <div>
+            <strong>Exceptional quality</strong>
+            <p>Rated highly for cleanliness, comfort, and style.</p>
+          </div>
+        </div>
+        <div class="highlight-item">
+          <i class="fa-solid fa-location-crosshairs"></i>
+          <div>
+            <strong>Great location</strong>
+            <p>100% of recent guests gave the location a 5-star rating.</p>
+          </div>
+        </div>
+        <div class="highlight-item">
+          <i class="fa-regular fa-calendar"></i>
+          <div>
+            <strong>Flexible cancellation</strong>
+            <p>Free cancellation for 48 hours.</p>
+          </div>
+        </div>
+      </div>
 
-    <div class="reviews-list">
-      <% if (latestReviews.length) { %>
-        <% latestReviews.forEach((review, index) => { %>
-          <article class="review-item">
-            <div class="review-topline">
-              <div class="reviewer">
-                <span class="reviewer-avatar">G<%= index + 1 %></span>
-                <div>
-                  <strong>Guest review</strong>
-                  <% if (review.createdAt) { %>
-                    <span><%= review.createdAt.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) %></span>
-                  <% } %>
+      <div class="listing-description section-divider">
+        <h2 class="section-title">About this space</h2>
+        <p><%= listing.description || 'This premium property offers an elevated stay experience with modern style, thoughtful amenities, and a location that feels both exclusive and effortlessly accessible.' %></p>
+      </div>
+      
+      <div class="listing-reviews section-divider" id="reviews">
+        <div class="reviews-header-main">
+          <h2><i class="fa-solid fa-star"></i> <%= ratingLabel %> · <%= reviewCount %> review<%= reviewCount === 1 ? '' : 's' %></h2>
+        </div>
+
+        <div class="reviews-grid">
+          <% if (latestReviews.length) { %>
+            <% latestReviews.forEach((review, index) => { %>
+              <div class="review-card">
+                <div class="review-user">
+                  <div class="user-avatar">G<%= index + 1 %></div>
+                  <div class="user-info">
+                    <strong>Guest Review</strong>
+                    <span>
+                      <% if (review.createdAt) { %>
+                        <%= review.createdAt.toLocaleDateString('en-IN', { month: 'long', year: 'numeric' }) %>
+                      <% } else { %>
+                        Recently
+                      <% } %>
+                    </span>
+                  </div>
                 </div>
+                <div class="review-rating-stars">
+                   <% for(let i=0; i<review.rating; i++) { %><i class="fa-solid fa-star"></i><% } %>
+                </div>
+                <p class="review-text"><%= review.comment %></p>
+                <form class="delete-review-form" action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST">
+                  <button class="delete-review-btn">Delete</button>
+                </form>
               </div>
-              <span class="review-rating"><%= review.rating %> / 5</span>
+            <% }) %>
+          <% } else { %>
+            <div class="empty-reviews">
+              <p>No reviews yet. Be the first to leave one!</p>
             </div>
-            <p><%= review.comment %></p>
-            <form class="review-delete-form" action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST">
-              <button type="submit" class="review-delete-btn">Delete review</button>
+          <% } %>
+        </div>
+
+        <div class="add-review-section">
+          <h3>Leave a review</h3>
+          <form class="review-form" action="/listings/<%= listing._id %>/reviews" method="POST">
+            <div class="rating-input">
+              <label>Rating</label>
+              <div class="star-rating">
+                <input type="radio" id="star5" name="review[rating]" value="5" checked />
+                <label for="star5" title="5 stars"><i class="fa-solid fa-star"></i></label>
+                <input type="radio" id="star4" name="review[rating]" value="4" />
+                <label for="star4" title="4 stars"><i class="fa-solid fa-star"></i></label>
+                <input type="radio" id="star3" name="review[rating]" value="3" />
+                <label for="star3" title="3 stars"><i class="fa-solid fa-star"></i></label>
+                <input type="radio" id="star2" name="review[rating]" value="2" />
+                <label for="star2" title="2 stars"><i class="fa-solid fa-star"></i></label>
+                <input type="radio" id="star1" name="review[rating]" value="1" />
+                <label for="star1" title="1 star"><i class="fa-solid fa-star"></i></label>
+              </div>
+            </div>
+            <div class="review-input">
+              <label for="comment">Comment</label>
+              <textarea id="comment" name="review[comment]" rows="4" minlength="5" required placeholder="Share your experience..."></textarea>
+            </div>
+            <button class="btn-primary">Submit Review</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="listing-sidebar">
+      <div class="booking-widget">
+        <div class="widget-header">
+          <div class="price-info">
+            <span class="price">₹<%= formattedPrice %></span>
+            <span class="night">night</span>
+          </div>
+        </div>
+
+        <div class="booking-inputs">
+          <div class="dates">
+            <div class="check-in">
+              <label>CHECK-IN</label>
+              <span>Add date</span>
+            </div>
+            <div class="check-out">
+              <label>CHECKOUT</label>
+              <span>Add date</span>
+            </div>
+          </div>
+          <div class="guests">
+            <label>GUESTS</label>
+            <span>1 guest</span>
+          </div>
+        </div>
+
+        <button class="btn-primary reserve-btn">Reserve</button>
+        <p class="charge-notice">You won't be charged yet</p>
+        
+        <div class="admin-actions">
+          <p class="admin-label">Host Actions</p>
+          <div class="action-buttons">
+            <a href="/listings/<%= listing._id %>/edit" class="btn-secondary">Edit</a>
+            <form action="/listings/<%= listing._id %>?_method=DELETE" method="POST" data-delete-form>
+              <button type="submit" class="btn-danger">Delete</button>
             </form>
-          </article>
-        <% }) %>
-      <% } else { %>
-        <p class="empty-reviews">No reviews yet. Add the first one and it will be saved to MongoDB.</p>
-      <% } %>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-  <% if (reviewCount > visibleLimit) { %>
-    <div class="review-page-actions">
-      <% if (canShowNewerReviews) { %>
-        <a class="btn-secondary" href="/listings/<%= listing._id %><%= currentReviewPage - 1 > 0 ? `?reviewsPage=${currentReviewPage - 1}` : '' %>">Show newer reviews</a>
-      <% } %>
-      <% if (canShowOlderReviews) { %>
-        <a class="btn-secondary" href="/listings/<%= listing._id %>?reviewsPage=<%= currentReviewPage + 1 %>">Show older reviews</a>
-      <% } %>
-    </div>
-  <% } %>
-</section>
-
-<section class="section location-card">
-  <small>Location overview</small>
-  <p><strong><%= listing.location || 'Location information unavailable' %></strong></p>
-  <% if (listing.country) { %>
-    <p><strong>Country</strong> • <%= listing.country %></p>
-  <% } %>
-</section>
+</div>
 
 <div class="modal-backdrop" data-delete-modal hidden>
-  <div class="confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="delete-dialog-title" aria-describedby="delete-dialog-description">
-    <div class="confirm-icon" aria-hidden="true">!</div>
+  <div class="confirm-dialog" role="dialog" aria-modal="true">
+    <div class="confirm-icon">!</div>
     <div class="confirm-copy">
-      <h2 id="delete-dialog-title">Delete this listing?</h2>
-      <p id="delete-dialog-description">This will permanently remove "<%= listing.title %>" and its reviews from your database.</p>
+      <h2>Delete this listing?</h2>
+      <p>This will permanently remove "<%= listing.title %>" and its reviews.</p>
     </div>
     <div class="confirm-actions">
-      <button type="button" class="btn-secondary" data-cancel-delete>Keep listing</button>
-      <button type="button" class="btn-danger confirm-delete-btn" data-confirm-delete>Delete permanently</button>
+      <button type="button" class="btn-secondary" data-cancel-delete>Cancel</button>
+      <button type="button" class="btn-danger confirm-delete-btn" data-confirm-delete>Delete</button>
     </div>
   </div>
 </div>

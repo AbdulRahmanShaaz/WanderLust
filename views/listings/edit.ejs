@@ -1,76 +1,60 @@
 <%
 layout('layouts/boilerplate');
   pageTitle = `WanderLust | Edit ${listing.title}`;
-  pageCss = '/css/listings/edit.css';
+  pageCss = '/css/listings/form.css';
   pageScript = '/js/form-validation.js';
-  navActionHref = `/listings/${listing._id}`;
-  navActionLabel = 'View listing';
-  footerText = 'WanderLust — curated and built Majesty MARS .';
 %>
-<main class="layout">
-  <section class="intro">
+<main class="form-page-container">
+  <div class="form-header-wrapper">
     <span class="eyebrow">Listing management</span>
-    <h1>Refine the stay before guests see it.</h1>
+    <h1>Refine the stay before guests see it</h1>
     <p>Edit the content that drives trust: title, location, pricing, imagery, and the property story.</p>
-    <div class="summary-card">
-      <strong><%= listing.title %></strong>
-      <span><%= listing.location %>, <%= listing.country %></span>
-    </div>
-  </section>
+  </div>
 
-  <section class="form-panel">
-    <div class="form-header">
-      <h2>Edit property details</h2>
-      <p>Changes are saved to the listing immediately.</p>
-    </div>
-
-    <form action="/listings/<%= listing._id %>?_method=PUT" method="POST" class="validated-form" novalidate>
-      <div class="field-grid">
-        <label class="full">
-          Listing title
-          <input type="text" name="listing[title]" value="<%= listing.title %>" required minlength="5" data-valid-text="Looks clear and specific." />
-          <span class="hint">Keep it specific and easy to scan.</span>
-          <span class="validation-message" aria-live="polite"></span>
-        </label>
-
-        <label class="full">
-          Description
-          <textarea name="listing[description]" required minlength="20" data-valid-text="Great, guests have enough detail."><%= listing.description %></textarea>
-          <span class="hint">Explain the setting, comfort, privacy, and standout details.</span>
-          <span class="validation-message" aria-live="polite"></span>
-        </label>
-
-        <label>
-          Location
-          <input type="text" name="listing[location]" value="<%= listing.location %>" required data-valid-text="Location added." />
-          <span class="validation-message" aria-live="polite"></span>
-        </label>
-
-        <label>
-          Country
-          <input type="text" name="listing[country]" value="<%= listing.country %>" required data-valid-text="Country added." />
-          <span class="validation-message" aria-live="polite"></span>
-        </label>
-
-        <label>
-          Price per night
-          <input type="number" name="listing[price]" value="<%= listing.price %>" required min="0" step="1" data-valid-text="Price looks good." />
-          <span class="hint">Enter the amount without currency symbols.</span>
-          <span class="validation-message" aria-live="polite"></span>
-        </label>
-
-        <label>
-          Image URL
-          <input type="url" name="listing[image]" value="<%= listing.image %>" data-valid-text="Image URL is valid." />
-          <span class="hint">Leave blank to use the default image.</span>
-          <span class="validation-message" aria-live="polite"></span>
-        </label>
+  <div class="form-card">
+    <form action="/listings/<%= listing._id %>?_method=PUT" method="POST" class="premium-form validated-form" novalidate>
+      
+      <div class="field-group">
+        <label for="title">Listing title</label>
+        <input type="text" id="title" name="listing[title]" value="<%= listing.title %>" required minlength="5" />
+        <span class="field-hint">Keep it specific and easy to scan.</span>
       </div>
 
-      <div class="actions">
+      <div class="field-group">
+        <label for="description">Description</label>
+        <textarea id="description" name="listing[description]" required minlength="20"><%= listing.description %></textarea>
+        <span class="field-hint">Explain the setting, comfort, privacy, and standout details.</span>
+      </div>
+
+      <div class="form-row split">
+        <div class="field-group">
+          <label for="location">Location</label>
+          <input type="text" id="location" name="listing[location]" value="<%= listing.location %>" required />
+        </div>
+        <div class="field-group">
+          <label for="country">Country</label>
+          <input type="text" id="country" name="listing[country]" value="<%= listing.country %>" required />
+        </div>
+      </div>
+
+      <div class="form-row split">
+        <div class="field-group">
+          <label for="price">Price per night</label>
+          <input type="number" id="price" name="listing[price]" value="<%= listing.price %>" required min="0" step="1" />
+          <span class="field-hint">Enter the amount in rupees (₹).</span>
+        </div>
+        <div class="field-group">
+          <label for="image">Image URL</label>
+          <input type="url" id="image" name="listing[image]" value="<%= listing.image && listing.image.url ? listing.image.url : listing.image %>" />
+          <span class="field-hint">Use a direct, publicly accessible image URL.</span>
+        </div>
+      </div>
+
+      <div class="form-actions">
         <a href="/listings/<%= listing._id %>" class="btn-secondary">Cancel</a>
         <button type="submit" class="btn-primary">Save changes</button>
       </div>
+
     </form>
-  </section>
+  </div>
 </main>
