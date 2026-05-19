@@ -52,7 +52,7 @@ layout('layouts/boilerplate');
         <input
           type="text"
           name="user[username]"
-          placeholder="abdul_travels"
+          placeholder="Enter Username"
           autocomplete="username"
           required
           minlength="3"
@@ -110,6 +110,10 @@ layout('layouts/boilerplate');
       </label>
 
       <button type="submit" class="btn-primary">Create account</button>
+      
+      <div style="margin-top: 1.5rem; text-align: center; font-size: 0.9rem; color: var(--muted);">
+        Already have an account? <a href="/login" style="color: var(--brand); font-weight: 600;">Log in</a>
+      </div>
     </form>
   </section>
 </main>

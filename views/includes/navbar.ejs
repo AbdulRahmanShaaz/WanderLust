@@ -31,12 +31,10 @@
         </div>
       </form>
     <% } else { %>
-      <a href="/signup" style="text-decoration: none; color: inherit;">
-        <div class="user-menu">
-          <i class="fa-solid fa-bars"></i>
-          <div class="avatar"><i class="fa-solid fa-user"></i></div>
-        </div>
-      </a>
+      <div class="user-menu-guest" style="display: flex; gap: 1rem; align-items: center; font-weight: 600; font-size: 0.95rem;">
+        <a href="/login" style="text-decoration: none; color: inherit;">Log in</a>
+        <a href="/signup" style="text-decoration: none; color: white; background: var(--brand); padding: 0.5rem 1rem; border-radius: 999px;">Sign up</a>
+      </div>
     <% } %>
   </div>
 </header>

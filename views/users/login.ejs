@@ -1,0 +1,85 @@
+<%
+layout('layouts/boilerplate');
+  pageTitle = 'WanderLust | Log In';
+  pageCss = '/css/users/signup.css';
+  pageScript = '/js/form-validation.js';
+  navActionHref = '/listings';
+  navActionLabel = 'Browse stays';
+  navSubtitle = 'Welcome back to WanderLust';
+  footerText = 'WanderLust · Pick up where you left off.';
+%>
+
+<main class="signup-shell">
+  <section class="signup-intro" aria-labelledby="login-title">
+    <span class="eyebrow">WanderLust account</span>
+    <h1 id="login-title">Welcome back to the world of unique stays.</h1>
+    <p>Sign in to manage your upcoming trips, message hosts, and build your wishlist of dream homes.</p>
+
+    <div class="benefit-list" aria-label="Account benefits">
+      <div class="benefit">
+        <span class="benefit-marker">01</span>
+        <div>
+          <strong>Manage trips</strong>
+          Keep track of your bookings and find all your reservation details.
+        </div>
+      </div>
+      <div class="benefit">
+        <span class="benefit-marker">02</span>
+        <div>
+          <strong>Host connection</strong>
+          Easily connect with hosts to plan your arrival and activities.
+        </div>
+      </div>
+      <div class="benefit">
+        <span class="benefit-marker">03</span>
+        <div>
+          <strong>Host dashboard</strong>
+          If you list your home, jump right into managing your properties.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="signup-panel" aria-label="Log in form">
+    <div class="form-header">
+      <h2>Log in to WanderLust</h2>
+      <p>Enter your account details to continue.</p>
+    </div>
+
+    <form action="/login" method="POST" class="validated-form" novalidate>
+      <label>
+        Username
+        <input
+          type="text"
+          name="username"
+          placeholder="Enter Username"
+          autocomplete="username"
+          required
+          minlength="3"
+          data-valid-text="Username entered."
+        />
+        <span class="validation-message" aria-live="polite"></span>
+      </label>
+
+      <label>
+        Password
+        <input
+          type="password"
+          name="password"
+          placeholder="Enter your password"
+          autocomplete="current-password"
+          required
+          minlength="8"
+          data-valid-text="Password entered."
+        />
+        <span class="validation-message" aria-live="polite"></span>
+      </label>
+
+      <button type="submit" class="btn-primary">Log in</button>
+      
+      <div style="margin-top: 1.5rem; text-align: center; font-size: 0.9rem; color: var(--muted);">
+        Don't have an account yet? <a href="/signup" style="color: var(--brand); font-weight: 600;">Sign up</a>
+      </div>
+    </form>
+  </section>
+</main>

@@ -43,6 +43,21 @@ module.exports.signup = async (req, res, next) => {
   }
 };
 
+module.exports.renderLoginForm = (req, res) => {
+  if (req.isAuthenticated()) {
+    req.flash('success', 'You are already signed in.');
+    return res.redirect('/listings');
+  }
+
+  res.render('users/login');
+};
+
+module.exports.login = (req, res) => {
+  req.flash('success', `Welcome back to WanderLust!`);
+  const redirectUrl = res.locals.returnTo || '/listings';
+  res.redirect(redirectUrl);
+};
+
 module.exports.logout = (req, res, next) => {
   req.logout((err) => {
     if (err) return next(err);

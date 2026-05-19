@@ -436,7 +436,7 @@ main {
   }
 
   .card__footer {
-    align-items: stretch;
-    flex-direction: column;
+    flex-wrap: wrap;
+    gap: 0.8rem;
   }
 }

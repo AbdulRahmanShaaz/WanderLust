@@ -16,17 +16,18 @@ const getInvalidText = (field) => {
 };
 
 const updateFieldState = (field, showEmptySuccess = false) => {
-  let message = field.closest('.field-group')?.querySelector('.validation-message');
+  let container = field.closest('.field-group') || field.closest('label');
+  let message = container?.querySelector('.validation-message');
   
   // Create message element if it doesn't exist
-  if (!message && field.closest('.field-group')) {
+  if (!message && container) {
     message = document.createElement('span');
     message.className = 'validation-message';
     message.setAttribute('aria-live', 'polite');
-    field.closest('.field-group').appendChild(message);
+    container.appendChild(message);
   }
 
-  if (!message) return field.checkValidity(); // Fallback if no .field-group
+  if (!message) return field.checkValidity(); // Fallback if no container
 
   if (field.dataset.match) {
     const target = field.form?.elements[field.dataset.match];

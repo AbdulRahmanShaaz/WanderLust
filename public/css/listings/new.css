@@ -208,7 +208,8 @@ textarea:focus {
   }
 
   .actions {
-    align-items: stretch;
-    flex-direction: column-reverse;
+    flex-wrap: wrap;
+    flex-direction: row;
+    gap: 0.8rem;
   }
 }
