@@ -42,11 +42,11 @@ layout('layouts/boilerplate');
     <div class="listing-main">
       <div class="listing-host-summary section-divider">
         <div class="host-text">
-          <h2>Entire home hosted by WanderLust</h2>
+          <h2>Entire home hosted by <%= listing.owner.username %></h2>
           <p>4 guests · 2 bedrooms · 2 beds · 1 bath</p>
         </div>
         <div class="host-avatar">
-          <span>W</span>
+          <span><%= listing.owner.username.charAt(0).toUpperCase() %></span>
         </div>
       </div>
 
@@ -89,9 +89,9 @@ layout('layouts/boilerplate');
             <% latestReviews.forEach((review, index) => { %>
               <div class="review-card">
                 <div class="review-user">
-                  <div class="user-avatar">G<%= index + 1 %></div>
+                  <div class="user-avatar"><%= review.author.username.charAt(0).toUpperCase() %></div>
                   <div class="user-info">
-                    <strong>Guest Review</strong>
+                    <strong><%= review.author.username %></strong>
                     <span>
                       <% if (review.createdAt) { %>
                         <%= review.createdAt.toLocaleDateString('en-IN', { month: 'long', year: 'numeric' }) %>
@@ -105,9 +105,11 @@ layout('layouts/boilerplate');
                    <% for(let i=0; i<review.rating; i++) { %><i class="fa-solid fa-star"></i><% } %>
                 </div>
                 <p class="review-text"><%= review.comment %></p>
+                <% if (currentUser && review.author._id.equals(currentUser._id)) { %>
                 <form class="delete-review-form" action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST">
                   <button class="delete-review-btn">Delete</button>
                 </form>
+                <% } %>
               </div>
             <% }) %>
           <% } else { %>
@@ -174,6 +176,7 @@ layout('layouts/boilerplate');
         <button class="btn-primary reserve-btn">Reserve</button>
         <p class="charge-notice">You won't be charged yet</p>
         
+        <% if (currentUser && listing.owner._id.equals(currentUser._id)) { %>
         <div class="admin-actions">
           <p class="admin-label">Host Actions</p>
           <div class="action-buttons">
@@ -183,6 +186,7 @@ layout('layouts/boilerplate');
             </form>
           </div>
         </div>
+        <% } %>
       </div>
     </div>
   </div>

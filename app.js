@@ -65,10 +65,7 @@ app.all('/{*splat}', (req, res, next) => {
 app.use((err, req, res, next) => {
   const { statusCode, message } = getErrorResponse(err);
 
-  // Log full error details to the server console for debugging
   console.error(err);
-
-  // Render only the user-friendly status and message to the client
   res.status(statusCode).render('error', { statusCode, message });
 });
 

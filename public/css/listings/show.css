@@ -258,7 +258,15 @@
   gap: 1rem;
 }
 
-.action-buttons a, .action-buttons form, .action-buttons button {
+.action-buttons a, .action-buttons form {
+  flex: 1;
+}
+
+.action-buttons form {
+  display: flex;
+}
+
+.action-buttons form button {
   flex: 1;
   width: 100%;
 }

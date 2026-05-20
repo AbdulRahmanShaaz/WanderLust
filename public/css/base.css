@@ -206,6 +206,52 @@ a {
   font-size: 1rem;
 }
 
+.user-menu-wrapper {
+  position: relative;
+}
+
+.user-dropdown {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  width: 240px;
+  background: white;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  padding: 0.5rem 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+}
+
+.user-dropdown[hidden] {
+  display: none;
+}
+
+.dropdown-item {
+  padding: 0.75rem 1rem;
+  color: var(--text-main);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: background 0.2s;
+  background: none;
+  border: none;
+  text-align: left;
+  width: 100%;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.dropdown-item:hover {
+  background: var(--bg-soft);
+}
+
+.dropdown-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 0.5rem 0;
+}
+
 /* --- FLASH MESSAGES --- */
 .flash-stack {
   position: fixed;
@@ -309,6 +355,7 @@ a {
   color: #fff;
   border: none;
   padding: 0.75rem 1.5rem;
+  font-family: inherit;
   font-size: 1rem;
   font-weight: 600;
   border-radius: var(--radius-lg);
@@ -328,6 +375,7 @@ a {
   color: var(--text-main);
   border: 1px solid var(--border);
   padding: 0.75rem 1.5rem;
+  font-family: inherit;
   font-size: 1rem;
   font-weight: 600;
   border-radius: var(--radius-lg);
@@ -348,11 +396,15 @@ a {
   color: #e12c32;
   border: 1px solid #e12c32;
   padding: 0.75rem 1.5rem;
+  font-family: inherit;
   font-size: 1rem;
   font-weight: 600;
   border-radius: var(--radius-lg);
   cursor: pointer;
   transition: background 0.2s, color 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn-danger:hover {

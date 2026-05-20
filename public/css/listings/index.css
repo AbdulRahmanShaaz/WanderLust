@@ -5,7 +5,6 @@
   align-items: center;
   gap: 2rem;
   padding: 2rem;
-  border-radius: 32px;
   background:
     linear-gradient(180deg, rgba(18, 28, 38, 0.83), rgba(18, 28, 38, 0.18)),
     url("https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1800&q=80") center/cover;

@@ -19,7 +19,6 @@ const updateFieldState = (field, showEmptySuccess = false) => {
   let container = field.closest('.field-group') || field.closest('label');
   let message = container?.querySelector('.validation-message');
   
-  // Create message element if it doesn't exist
   if (!message && container) {
     message = document.createElement('span');
     message.className = 'validation-message';

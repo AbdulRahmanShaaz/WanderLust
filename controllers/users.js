@@ -2,6 +2,7 @@ const passport = require('passport');
 const User = require('../models/user');
 const ExpressError = require('../utils/ExpressError');
 
+// Render the user registration form
 module.exports.renderSignupForm = (req, res) => {
   if (req.isAuthenticated()) {
     req.flash('success', 'You are already signed in.');
@@ -11,6 +12,7 @@ module.exports.renderSignupForm = (req, res) => {
   res.render('users/signup');
 };
 
+// Process user registration and automatically log them in
 module.exports.signup = async (req, res, next) => {
   try {
     const { username, email, password, confirmPassword } = req.body.user || {};
@@ -43,6 +45,7 @@ module.exports.signup = async (req, res, next) => {
   }
 };
 
+// Render the user login form
 module.exports.renderLoginForm = (req, res) => {
   if (req.isAuthenticated()) {
     req.flash('success', 'You are already signed in.');
@@ -52,12 +55,14 @@ module.exports.renderLoginForm = (req, res) => {
   res.render('users/login');
 };
 
+// Process user login and redirect to intended destination
 module.exports.login = (req, res) => {
   req.flash('success', `Welcome back to WanderLust!`);
   const redirectUrl = res.locals.returnTo || '/listings';
   res.redirect(redirectUrl);
 };
 
+// Process user logout and destroy session
 module.exports.logout = (req, res, next) => {
   req.logout((err) => {
     if (err) return next(err);

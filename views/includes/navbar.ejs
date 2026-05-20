@@ -23,18 +23,57 @@
   <div class="nav-right">
     <a href="/listings/new" class="host-link">WanderLust your home</a>
     
-    <% if (currentUser) { %>
-      <form action="/logout" method="POST" style="margin: 0; display: inline;">
-        <div class="user-menu" onclick="this.parentNode.submit();" title="Log out">
-          <i class="fa-solid fa-bars"></i>
-          <div class="avatar"><i class="fa-solid fa-user"></i></div>
-        </div>
-      </form>
-    <% } else { %>
-      <div class="user-menu-guest" style="display: flex; gap: 1rem; align-items: center; font-weight: 600; font-size: 0.95rem;">
-        <a href="/login" style="text-decoration: none; color: inherit;">Log in</a>
-        <a href="/signup" style="text-decoration: none; color: white; background: var(--brand); padding: 0.5rem 1rem; border-radius: 999px;">Sign up</a>
+    <div class="user-menu-wrapper">
+      <button type="button" class="user-menu" id="user-menu-btn" aria-expanded="false" aria-haspopup="true">
+        <i class="fa-solid fa-bars"></i>
+        <div class="avatar"><i class="fa-solid fa-user"></i></div>
+      </button>
+
+      <div class="user-dropdown" id="user-dropdown-menu" hidden>
+        <% if (currentUser) { %>
+          <a href="/listings" class="dropdown-item fw-bold">Trips</a>
+          <a href="/listings" class="dropdown-item">Wishlists</a>
+          <div class="dropdown-divider"></div>
+          <a href="/listings/new" class="dropdown-item">WanderLust your home</a>
+          <a href="#" class="dropdown-item">Account</a>
+          <div class="dropdown-divider"></div>
+          <form action="/logout" method="POST" style="margin:0;">
+            <button type="submit" class="dropdown-item">Log out</button>
+          </form>
+        <% } else { %>
+          <a href="/signup" class="dropdown-item" style="font-weight: 600;">Sign up</a>
+          <a href="/login" class="dropdown-item">Log in</a>
+          <div class="dropdown-divider"></div>
+          <a href="/listings/new" class="dropdown-item">WanderLust your home</a>
+          <a href="#" class="dropdown-item">Help</a>
+        <% } %>
       </div>
-    <% } %>
+    </div>
   </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const userBtn = document.getElementById('user-menu-btn');
+    const userMenu = document.getElementById('user-dropdown-menu');
+
+    userBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isHidden = userMenu.hasAttribute('hidden');
+      if (isHidden) {
+        userMenu.removeAttribute('hidden');
+        userBtn.setAttribute('aria-expanded', 'true');
+      } else {
+        userMenu.setAttribute('hidden', '');
+        userBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!userMenu.contains(e.target) && !userBtn.contains(e.target)) {
+        userMenu.setAttribute('hidden', '');
+        userBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
+  });
+</script>
 </header>

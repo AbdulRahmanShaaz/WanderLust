@@ -2,26 +2,31 @@ const Listing = require('../models/listing');
 const Review = require('../models/review');
 const ExpressError = require('../utils/ExpressError');
 
+// Retrieve and display all listings
 module.exports.index = async (req, res) => {
   const listings = await Listing.find();
   res.render('listings/index', { listings });
 };
 
+// Render form to create a new listing
 module.exports.renderNewForm = (req, res) => {
   res.render('listings/new');
 };
 
+// Process new listing creation
 module.exports.createListing = async (req, res) => {
   const listing = new Listing(req.body.listing);
+  listing.owner = req.user._id;
   await listing.save();
   req.flash('success', 'New listing created successfully.');
   res.redirect(`/listings/${listing._id}`);
 };
 
+// Display a single listing and its paginated reviews
 module.exports.showListing = async (req, res) => {
   const reviewDisplayLimit = 4;
   const reviewPage = Math.max(parseInt(req.query.reviewsPage, 10) || 0, 0);
-  const listing = await Listing.findById(req.params.id);
+  const listing = await Listing.findById(req.params.id).populate('owner');
 
   if (!listing) {
     throw new ExpressError(404, 'Listing not found');
@@ -37,6 +42,7 @@ module.exports.showListing = async (req, res) => {
 
   const visibleReviews = totalReviews
     ? await Review.find({ _id: { $in: listing.reviews } })
+      .populate('author')
       .sort({ createdAt: -1 })
       .skip(reviewPage * reviewDisplayLimit)
       .limit(reviewDisplayLimit)
@@ -58,6 +64,7 @@ module.exports.showListing = async (req, res) => {
   });
 };
 
+// Render form to edit an existing listing
 module.exports.renderEditForm = async (req, res) => {
   const listing = await Listing.findById(req.params.id);
 
@@ -68,6 +75,7 @@ module.exports.renderEditForm = async (req, res) => {
   res.render('listings/edit', { listing });
 };
 
+// Process updates to a specific listing
 module.exports.updateListing = async (req, res) => {
   const listing = await Listing.findByIdAndUpdate(
     req.params.id,
@@ -83,6 +91,7 @@ module.exports.updateListing = async (req, res) => {
   res.redirect(`/listings/${listing._id}`);
 };
 
+// Remove a listing from the database
 module.exports.destroyListing = async (req, res) => {
   const listing = await Listing.findByIdAndDelete(req.params.id);
 
