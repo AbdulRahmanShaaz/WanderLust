@@ -2,7 +2,7 @@ const listingSchema = require('../schemas/listing');
 const ExpressError = require('../utils/ExpressError');
 
 module.exports = (req, res, next) => {
-  const { error, value } = listingSchema.validate(req.body.listing || {}, {
+  const { error, value } = listingSchema.validate(req.body?.listing || {}, {
     abortEarly: false,
     stripUnknown: true,
   });

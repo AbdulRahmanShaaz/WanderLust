@@ -16,6 +16,9 @@ module.exports.renderNewForm = (req, res) => {
 // Process new listing creation
 module.exports.createListing = async (req, res) => {
   const listing = new Listing(req.body.listing);
+  if (req.file) {
+    listing.image = req.file.path;
+  }
   listing.owner = req.user._id;
   await listing.save();
   req.flash('success', 'New listing created successfully.');
@@ -32,16 +35,17 @@ module.exports.showListing = async (req, res) => {
     throw new ExpressError(404, 'Listing not found');
   }
 
-  const totalReviews = listing.reviews.length;
+  const reviewsArray = Array.isArray(listing.reviews) ? listing.reviews : [];
+  const totalReviews = reviewsArray.length;
   const ratingStats = totalReviews
     ? await Review.aggregate([
-      { $match: { _id: { $in: listing.reviews } } },
+      { $match: { _id: { $in: reviewsArray } } },
       { $group: { _id: null, averageRating: { $avg: '$rating' } } },
     ])
     : [];
 
   const visibleReviews = totalReviews
-    ? await Review.find({ _id: { $in: listing.reviews } })
+    ? await Review.find({ _id: { $in: reviewsArray } })
       .populate('author')
       .sort({ createdAt: -1 })
       .skip(reviewPage * reviewDisplayLimit)
@@ -52,6 +56,29 @@ module.exports.showListing = async (req, res) => {
     ? ratingStats[0].averageRating.toFixed(1)
     : 'New';
 
+  const ratingGroups = totalReviews
+    ? await Review.aggregate([
+      { $match: { _id: { $in: listing.reviews } } },
+      { $group: { _id: '$rating', count: { $sum: 1 } } },
+    ])
+    : [];
+
+  const countByStars = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+  ratingGroups.forEach((g) => {
+    if (g._id >= 1 && g._id <= 5) {
+      countByStars[g._id] = g.count;
+    }
+  });
+
+  const ratingBreakdown = [5, 4, 3, 2, 1].map((stars) => {
+    const count = countByStars[stars];
+    return {
+      stars,
+      count,
+      percent: totalReviews ? Math.round((count * 100) / totalReviews) : 0,
+    };
+  });
+
   res.render('listings/show', {
     listing,
     averageRating,
@@ -59,6 +86,7 @@ module.exports.showListing = async (req, res) => {
     reviewDisplayLimit,
     reviewPage,
     visibleReviews,
+    ratingBreakdown,
     hasOlderReviews: (reviewPage + 1) * reviewDisplayLimit < totalReviews,
     hasNewerReviews: reviewPage > 0,
   });
@@ -77,9 +105,14 @@ module.exports.renderEditForm = async (req, res) => {
 
 // Process updates to a specific listing
 module.exports.updateListing = async (req, res) => {
+  const updates = { ...req.body.listing };
+  if (req.file) {
+    updates.image = req.file.path;
+  }
+
   const listing = await Listing.findByIdAndUpdate(
     req.params.id,
-    req.body.listing,
+    updates,
     { new: true, runValidators: true }
   );
 

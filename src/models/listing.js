@@ -44,6 +44,17 @@ const listingSchema = new Schema({
         trim: true,
         minlength: 2,
     },
+    geometry: {
+        type: {
+            type: String,
+            enum: ['Point'],
+            default: 'Point'
+        },
+        coordinates: {
+            type: [Number],
+            default: [77.209, 28.6139] // Default: New Delhi
+        }
+    },
     reviews: [
         {
             type: Schema.Types.ObjectId,

@@ -435,13 +435,41 @@ main {
   font-family: inherit;
   font-size: 1rem;
   color: var(--text-main);
-  transition: border-color 0.2s;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .validated-form input:focus,
 .validated-form textarea:focus {
   outline: none;
-  border-color: var(--text-main);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.validated-form input.is-valid,
+.validated-form textarea.is-valid {
+  border-color: #00a699;
+  box-shadow: 0 0 0 3px rgba(0, 166, 153, 0.1);
+}
+
+.validated-form input.is-invalid,
+.validated-form textarea.is-invalid {
+  border-color: #e12c32;
+  box-shadow: 0 0 0 3px rgba(225, 44, 50, 0.1);
+}
+
+.validation-message {
+  font-size: 0.85rem;
+  font-weight: 600;
+  min-height: 1.2em;
+  margin-top: 0.25rem;
+}
+
+.validation-message.is-error {
+  color: #e12c32;
+}
+
+.validation-message.is-success {
+  color: #00a699;
 }
 
 /* --- MOBILE RESPONSIVENESS --- */

@@ -3,7 +3,13 @@ layout('layouts/boilerplate');
   pageTitle = `WanderLust | ${listing.title}`;
   pageCss = '/css/listings/show.css';
   pageScript = '/js/listings/show.js';
+  const coordinates = listing.geometry && listing.geometry.coordinates ? listing.geometry.coordinates : [77.209, 28.6139];
 %>
+<script>
+  window.listingCoordinates = [<%= coordinates[0] %>, <%= coordinates[1] %>];
+  window.mapboxToken = "<%= mapboxToken %>";
+</script>
+<% const avgRatingFloat = (typeof averageRating !== 'undefined' && averageRating !== 'New') ? parseFloat(averageRating) : 0; %>
 <% const priceValue = Number(listing.price); const formattedPrice = !Number.isNaN(priceValue) ? priceValue.toLocaleString('en-IN') : 'N/A'; %>
 <%
   const reviews = typeof visibleReviews !== 'undefined' ? visibleReviews : (listing.reviews || []);
@@ -12,14 +18,19 @@ layout('layouts/boilerplate');
   const visibleLimit = Math.min(4, typeof reviewDisplayLimit !== 'undefined' ? reviewDisplayLimit : 4);
   const latestReviews = reviews.slice(0, visibleLimit);
   const ratingLabel = typeof averageRating !== 'undefined' ? averageRating : 'New';
+  const hostName = listing.owner && listing.owner.username ? listing.owner.username : 'WanderLust';
+  const hostInitial = hostName.charAt(0).toUpperCase();
+  const isListingOwner = currentUser && listing.owner && listing.owner._id && listing.owner._id.equals(currentUser._id);
+  const currentUserId = currentUser && currentUser._id ? String(currentUser._id) : null;
 %>
 
 <div class="listing-container">
   <div class="listing-header">
     <h1><%= listing.title %></h1>
     <div class="listing-header-meta">
-      <div class="meta-left">
-        <span class="rating-star"><i class="fa-solid fa-star"></i> <%= ratingLabel %></span>
+    <div class="meta-left">
+        <p class="starability-result" data-rating="<%= Math.round(avgRatingFloat) %>"></p>
+        <span class="rating-label"><%= ratingLabel %></span>
         <% if(reviewCount > 0) { %>
           <span class="meta-dot">·</span>
           <a href="#reviews" class="review-link"><%= reviewCount %> review<%= reviewCount === 1 ? '' : 's' %></a>
@@ -34,19 +45,19 @@ layout('layouts/boilerplate');
   </div>
 
   <section class="listing-gallery">
-    <% const defaultImage = 'https://images.unsplash.com/photo-1625505826533-5c80aca7d157?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80'; const listingImage = listing.image && listing.image.url ? listing.image.url : listing.image; %>
-    <img src="<%= listingImage || defaultImage %>" alt="<%= listing.title %>" onerror="this.onerror=null;this.src='<%= defaultImage %>'" />
+    <% const defaultImage = 'https://images.unsplash.com/photo-1625505826533-5c80aca7d157?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80'; const listingImage = listing.image && listing.image.url ? listing.image.url : listing.image; const optimizedShowImage = getShowImageUrl(listingImage) || listingImage; %>
+    <img src="<%= optimizedShowImage || defaultImage %>" alt="<%= listing.title %>" onerror="this.onerror=null;this.src='<%= defaultImage %>'" />
   </section>
 
   <div class="listing-body">
     <div class="listing-main">
       <div class="listing-host-summary section-divider">
         <div class="host-text">
-          <h2>Entire home hosted by <%= listing.owner.username %></h2>
+          <h2>Entire home hosted by <%= hostName %></h2>
           <p>4 guests · 2 bedrooms · 2 beds · 1 bath</p>
         </div>
         <div class="host-avatar">
-          <span><%= listing.owner.username.charAt(0).toUpperCase() %></span>
+          <span><%= hostInitial %></span>
         </div>
       </div>
 
@@ -78,39 +89,90 @@ layout('layouts/boilerplate');
         <h2 class="section-title">About this space</h2>
         <p><%= listing.description || 'This premium property offers an elevated stay experience with modern style, thoughtful amenities, and a location that feels both exclusive and effortlessly accessible.' %></p>
       </div>
-      
-      <div class="listing-reviews section-divider" id="reviews">
-        <div class="reviews-header-main">
-          <h2><i class="fa-solid fa-star"></i> <%= ratingLabel %> · <%= reviewCount %> review<%= reviewCount === 1 ? '' : 's' %></h2>
-        </div>
 
-        <div class="reviews-grid">
+      <div class="listing-location section-divider">
+        <h2 class="section-title">Where you'll be</h2>
+        <div class="location-map-wrapper">
+          <div id="listing-map" class="listing-map"></div>
+        </div>
+        <div class="location-address">
+          <i class="fa-solid fa-location-dot"></i>
+          <span><%= listing.location %>, <%= listing.country %></span>
+        </div>
+      </div>
+      
+      <div class="listing-reviews listing-reviews--polished section-divider" id="reviews">
+        <header class="reviews-section-head">
+          <p class="reviews-eyebrow">What guests are saying</p>
+          <h2 class="section-title reviews-title">Guest reviews</h2>
+          <% if (reviewCount > 0) { %>
+          <p class="reviews-subtitle">
+            <span class="reviews-subtitle-rating"><%= ratingLabel %></span>
+            <span class="reviews-subtitle-dot" aria-hidden="true">·</span>
+            <span><%= reviewCount %> review<%= reviewCount === 1 ? '' : 's' %></span>
+          </p>
+          <% } else { %>
+          <p class="reviews-subtitle reviews-subtitle--muted">No reviews yet for this stay.</p>
+          <% } %>
+        </header>
+
+        <% if (reviewCount > 0 && typeof ratingBreakdown !== 'undefined') { %>
+        <div class="reviews-overview" aria-label="Rating summary">
+          <div class="reviews-overview-summary">
+            <div class="reviews-score-block">
+              <span class="reviews-score-num"><%= ratingLabel %></span>
+              <div class="reviews-score-meta">
+                <p class="starability-result" data-rating="<%= Math.round(avgRatingFloat) %>"></p>
+                <p class="reviews-score-caption">Overall guest rating</p>
+              </div>
+            </div>
+          </div>
+          <ol class="reviews-breakdown" aria-label="Star rating distribution">
+            <% ratingBreakdown.forEach((row) => { %>
+            <li class="breakdown-row">
+              <span class="breakdown-label"><%= row.stars %><span class="breakdown-label-sr"> star<%= row.stars === 1 ? '' : 's' %></span></span>
+              <div class="breakdown-bar" role="presentation">
+                <span class="breakdown-bar-fill" style="width: <%= row.percent %>%"></span>
+              </div>
+              <span class="breakdown-count"><%= row.count %></span>
+            </li>
+            <% }) %>
+          </ol>
+        </div>
+        <% } %>
+
+        <div class="reviews-grid" role="list">
           <% if (latestReviews.length) { %>
             <% latestReviews.forEach((review, index) => { %>
-              <div class="review-card">
-                <div class="review-user">
-                  <div class="user-avatar"><%= review.author.username.charAt(0).toUpperCase() %></div>
-                  <div class="user-info">
-                    <strong><%= review.author.username %></strong>
-                    <span>
-                      <% if (review.createdAt) { %>
-                        <%= review.createdAt.toLocaleDateString('en-IN', { month: 'long', year: 'numeric' }) %>
-                      <% } else { %>
-                        Recently
-                      <% } %>
-                    </span>
+              <% const reviewAuthor = review.author || {}; const reviewAuthorName = reviewAuthor.username || 'Deleted user'; const reviewAuthorId = reviewAuthor._id ? String(reviewAuthor._id) : null; %>
+              <article class="review-card" role="listitem">
+                <div class="review-card-inner">
+                  <div class="review-card-header">
+                    <div class="review-user">
+                      <div class="user-avatar" aria-hidden="true"><%= reviewAuthorName.charAt(0).toUpperCase() %></div>
+                      <div class="user-info">
+                        <strong class="user-name"><%= reviewAuthorName %></strong>
+                        <% if (review.createdAt) { %>
+                        <time class="review-date" datetime="<%= review.createdAt.toISOString() %>"><%= review.createdAt.toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' }) %></time>
+                        <% } else { %>
+                        <span class="review-date">Recently</span>
+                        <% } %>
+                      </div>
+                    </div>
+                    <div class="review-rating-stars" aria-label="Rating: <%= review.rating %> out of 5">
+                      <p class="starability-result" data-rating="<%= review.rating %>"></p>
+                    </div>
                   </div>
+                  <p class="review-text"><%= review.comment %></p>
+                  <% if (currentUserId && reviewAuthorId === currentUserId) { %>
+                  <form class="delete-review-form" action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST">
+                    <button type="submit" class="delete-review-btn">
+                      <i class="fa-solid fa-trash"></i> Delete review
+                    </button>
+                  </form>
+                  <% } %>
                 </div>
-                <div class="review-rating-stars">
-                   <% for(let i=0; i<review.rating; i++) { %><i class="fa-solid fa-star"></i><% } %>
-                </div>
-                <p class="review-text"><%= review.comment %></p>
-                <% if (currentUser && review.author._id.equals(currentUser._id)) { %>
-                <form class="delete-review-form" action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST">
-                  <button class="delete-review-btn">Delete</button>
-                </form>
-                <% } %>
-              </div>
+              </article>
             <% }) %>
           <% } else { %>
             <div class="empty-reviews">
@@ -119,23 +181,38 @@ layout('layouts/boilerplate');
           <% } %>
         </div>
 
+        <% if (typeof hasOlderReviews !== 'undefined' && (hasOlderReviews || hasNewerReviews)) { %>
+        <nav class="reviews-pagination" aria-label="More reviews">
+          <% if (hasNewerReviews) { %>
+            <a class="reviews-page-link" href="/listings/<%= listing._id %>?reviewsPage=<%= reviewPage - 1 %>#reviews">Newer</a>
+          <% } %>
+          <% if (hasOlderReviews && hasNewerReviews) { %>
+            <span class="reviews-page-sep" aria-hidden="true">·</span>
+          <% } %>
+          <% if (hasOlderReviews) { %>
+            <a class="reviews-page-link" href="/listings/<%= listing._id %>?reviewsPage=<%= reviewPage + 1 %>#reviews">Older</a>
+          <% } %>
+        </nav>
+        <% } %>
+
         <div class="add-review-section">
           <h3>Leave a review</h3>
-          <form class="review-form" action="/listings/<%= listing._id %>/reviews" method="POST">
+          <form class="review-form" action="/listings/<%= listing._id %>/reviews" method="POST" data-review-form>
             <div class="rating-input">
-              <label>Rating</label>
-              <div class="star-rating">
-                <input type="radio" id="star5" name="review[rating]" value="5" checked />
-                <label for="star5" title="5 stars"><i class="fa-solid fa-star"></i></label>
-                <input type="radio" id="star4" name="review[rating]" value="4" />
-                <label for="star4" title="4 stars"><i class="fa-solid fa-star"></i></label>
-                <input type="radio" id="star3" name="review[rating]" value="3" />
-                <label for="star3" title="3 stars"><i class="fa-solid fa-star"></i></label>
-                <input type="radio" id="star2" name="review[rating]" value="2" />
-                <label for="star2" title="2 stars"><i class="fa-solid fa-star"></i></label>
-                <input type="radio" id="star1" name="review[rating]" value="1" />
-                <label for="star1" title="1 star"><i class="fa-solid fa-star"></i></label>
-              </div>
+              <fieldset class="starability-basic">
+                <legend>Your Rating</legend>
+                <input type="radio" id="no-rate-<%= listing._id %>" class="input-no-rate" name="review[rating]" value="0" checked aria-label="No rating." />
+                <input type="radio" id="rate-5-<%= listing._id %>" name="review[rating]" value="5" />
+                <label for="rate-5-<%= listing._id %>" title="Amazing">5 stars</label>
+                <input type="radio" id="rate-4-<%= listing._id %>" name="review[rating]" value="4" />
+                <label for="rate-4-<%= listing._id %>" title="Very good">4 stars</label>
+                <input type="radio" id="rate-3-<%= listing._id %>" name="review[rating]" value="3" />
+                <label for="rate-3-<%= listing._id %>" title="Average">3 stars</label>
+                <input type="radio" id="rate-2-<%= listing._id %>" name="review[rating]" value="2" />
+                <label for="rate-2-<%= listing._id %>" title="Not good">2 stars</label>
+                <input type="radio" id="rate-1-<%= listing._id %>" name="review[rating]" value="1" />
+                <label for="rate-1-<%= listing._id %>" title="Terrible">1 star</label>
+              </fieldset>
             </div>
             <div class="review-input">
               <label for="comment">Comment</label>
@@ -176,7 +253,7 @@ layout('layouts/boilerplate');
         <button class="btn-primary reserve-btn">Reserve</button>
         <p class="charge-notice">You won't be charged yet</p>
         
-        <% if (currentUser && listing.owner._id.equals(currentUser._id)) { %>
+        <% if (isListingOwner) { %>
         <div class="admin-actions">
           <p class="admin-label">Host Actions</p>
           <div class="action-buttons">

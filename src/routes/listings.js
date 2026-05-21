@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const listings = require('../controllers/listings');
 const validateListing = require('../middleware/validateListing');
+const uploadListingImage = require('../middleware/uploadListingImage');
 const { isLoggedIn } = require('../middleware/isLoggedIn');
 const { isOwner } = require('../middleware/isOwner');
 const wrapAsync = require('../utils/wrapAsync');
@@ -10,7 +11,12 @@ const wrapAsync = require('../utils/wrapAsync');
 router
   .route('/')
   .get(wrapAsync(listings.index))
-  .post(isLoggedIn, validateListing, wrapAsync(listings.createListing));
+  .post(
+    isLoggedIn,
+    uploadListingImage.single('image'),
+    validateListing,
+    wrapAsync(listings.createListing)
+  );
 
 // New listing form
 router.get('/new', isLoggedIn, listings.renderNewForm);
@@ -19,7 +25,13 @@ router.get('/new', isLoggedIn, listings.renderNewForm);
 router
   .route('/:id')
   .get(wrapAsync(listings.showListing))
-  .put(isLoggedIn, isOwner, validateListing, wrapAsync(listings.updateListing))
+  .put(
+    isLoggedIn,
+    isOwner,
+    uploadListingImage.single('image'),
+    validateListing,
+    wrapAsync(listings.updateListing)
+  )
   .delete(isLoggedIn, isOwner, wrapAsync(listings.destroyListing));
 
 // Edit listing form

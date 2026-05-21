@@ -92,10 +92,10 @@ layout('layouts/boilerplate');
     </div>
     <section class="listings-grid">
       <% listings.forEach(listing => { %>
-        <% const listingPrice = Number(listing.price); const formattedListingPrice = !Number.isNaN(listingPrice) ? listingPrice.toLocaleString('en-IN') : 'N/A'; const defaultImage = 'https://images.unsplash.com/photo-1625505826533-5c80aca7d157?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'; const listingImage = listing.image && listing.image.url ? listing.image.url : listing.image; %>
+        <% const listingPrice = Number(listing.price); const formattedListingPrice = !Number.isNaN(listingPrice) ? listingPrice.toLocaleString('en-IN') : 'N/A'; const defaultImage = 'https://images.unsplash.com/photo-1625505826533-5c80aca7d157?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'; const listingImage = listing.image && listing.image.url ? listing.image.url : listing.image; const optimizedCardImage = getCardImageUrl(listingImage) || listingImage; %>
         <article class="card">
           <a class="card__media" href="/listings/<%= listing._id %>" aria-label="View <%= listing.title %>">
-            <img class="card__image" src="<%= listingImage || defaultImage %>" alt="<%= listing.title %>" onerror="this.onerror=null;this.src='<%= defaultImage %>'" />
+            <img class="card__image" src="<%= optimizedCardImage || defaultImage %>" alt="<%= listing.title %>" onerror="this.onerror=null;this.src='<%= defaultImage %>'" />
             <span class="card__price">₹<%= formattedListingPrice %> / night</span>
           </a>
           <div class="card__body">

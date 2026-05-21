@@ -12,7 +12,7 @@ layout('layouts/boilerplate');
   </div>
 
   <div class="form-card">
-    <form action="/listings" method="POST" class="premium-form validated-form" novalidate>
+    <form action="/listings" method="POST" enctype="multipart/form-data" class="premium-form validated-form" novalidate>
       
       <div class="field-group">
         <label for="title">Listing title</label>
@@ -44,9 +44,13 @@ layout('layouts/boilerplate');
           <span class="field-hint">Enter the amount in rupees (₹).</span>
         </div>
         <div class="field-group">
-          <label for="image">Image URL</label>
-          <input type="url" id="image" name="listing[image]" placeholder="https://images.unsplash.com/..." />
-          <span class="field-hint">Use a direct, publicly accessible image URL.</span>
+          <label for="image">Listing image</label>
+          <label for="image" class="file-upload-label">
+            <i class="fa-solid fa-upload"></i>
+            <span>Choose listing image</span>
+            <input type="file" id="image" name="image" accept="image/*" class="file-input-hidden" />
+          </label>
+          <span class="field-hint">Upload an image from your device (jpg, png, webp, etc.).</span>
         </div>
       </div>
 

@@ -1,3 +1,8 @@
 node_modules/
 .env
+.env.local
 *.log
+cookies.txt
+test-upload.jpg
+uploads/*
+!uploads/.gitkeep

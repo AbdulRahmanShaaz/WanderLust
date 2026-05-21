@@ -23,6 +23,20 @@ const getErrorResponse = (err) => {
     };
   }
 
+  if (err.name === 'MulterError') {
+    return {
+      statusCode: 400,
+      message: err.message,
+    };
+  }
+
+  if (err.message === 'Only image files are allowed.') {
+    return {
+      statusCode: 400,
+      message: err.message,
+    };
+  }
+
   return {
     statusCode: 500,
     message: 'Internal Server Error',

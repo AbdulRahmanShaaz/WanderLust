@@ -1,20 +1,23 @@
 {
   "name": "wanderlust",
   "version": "1.0.0",
-  "description": "",
-  "main": "app.js",
+  "description": "Airbnb-style vacation rental marketplace",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js",
-    "dev": "nodemon app.js",
-    "seed": "node seed.js"
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "seed": "node scripts/seed.js",
+    "reseed": "node scripts/reseed.js",
+    "restore": "node scripts/restore-listings.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "cloudinary": "^2.10.0",
     "connect-flash": "^0.1.1",
+    "dotenv": "^17.4.2",
     "ejs": "^3.1.10",
     "ejs-mate": "^4.0.0",
     "express": "^5.2.1",
@@ -22,6 +25,8 @@
     "joi": "^18.2.1",
     "method-override": "^3.0.0",
     "mongoose": "^9.6.2",
+    "multer": "^2.1.1",
+    "multer-storage-cloudinary": "^4.0.0",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
     "passport-local-mongoose": "^9.1.0"

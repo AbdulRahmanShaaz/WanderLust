@@ -1,22 +1,21 @@
-const express = require('express');
 const path = require('path');
-const { connectDB } = require('./db');
+const express = require('express');
 const methodOverride = require('method-override');
 const ejsMate = require('ejs-mate');
+const session = require('express-session');
+const flash = require('connect-flash');
+const passport = require('passport');
+const LocalStrategy = require('passport-local');
+
 const ExpressError = require('./utils/ExpressError');
 const getErrorResponse = require('./utils/getErrorResponse');
 const listingRoutes = require('./routes/listings');
 const reviewRoutes = require('./routes/reviews');
 const userRoutes = require('./routes/users');
-const session = require('express-session');
-const flash = require('connect-flash');
-const passport = require('passport');
-const LocalStrategy = require('passport-local');
 const User = require('./models/user');
-
+const { getCardImageUrl, getShowImageUrl, getOptimizedImageUrl } = require('./utils/cloudinaryHelpers');
 
 const app = express();
-const port = process.env.PORT || 8080;
 
 const sessionOptions = {
   secret: process.env.SESSION_SECRET || 'wanderlust-dev-secret',
@@ -24,14 +23,17 @@ const sessionOptions = {
   saveUninitialized: true,
   cookie: {
     httpOnly: true,
-    maxAge: 1000 * 60 * 60 * 24 * 7
-  }
+    maxAge: 1000 * 60 * 60 * 24 * 7,
+  },
 };
+
+const rootDir = path.join(__dirname, '..');
 
 app.engine('ejs', ejsMate);
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
-app.use(express.static(path.join(__dirname, 'public')));
+app.set('views', path.join(rootDir, 'views'));
+app.use(express.static(path.join(rootDir, 'public')));
+app.use('/uploads', express.static(path.join(rootDir, 'uploads')));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 app.use(session(sessionOptions));
@@ -47,6 +49,10 @@ app.use((req, res, next) => {
   res.locals.success = req.flash('success');
   res.locals.error = req.flash('error');
   res.locals.currentUser = req.user;
+  res.locals.getCardImageUrl = getCardImageUrl;
+  res.locals.getShowImageUrl = getShowImageUrl;
+  res.locals.getOptimizedImageUrl = getOptimizedImageUrl;
+  res.locals.mapboxToken = process.env.MAPBOX_TOKEN;
   next();
 });
 
@@ -69,14 +75,4 @@ app.use((err, req, res, next) => {
   res.status(statusCode).render('error', { statusCode, message });
 });
 
-async function start() {
-  await connectDB();
-  app.listen(port, () => {
-    console.log(`Server running on http://localhost:${port}`);
-  });
-}
-
-start().catch(err => {
-  console.error('Startup failed:', err);
-  process.exit(1);
-});
+module.exports = app;
