@@ -1,89 +1,96 @@
 /* ============================================================
-   HERO — Cinematic, full-bleed, Airbnb-quality
+   HERO — Full viewport, cinematic, Airbnb-quality
    ============================================================ */
 .hero {
   position: relative;
-  height: 540px;
+  height: calc(100vh - var(--nav-h));
+  min-height: 600px;
+  max-height: 900px;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
 }
 
-/* Photo background — sharp, vivid destination photo */
+/* Cinematic background photo */
 .hero-background {
   position: absolute;
   inset: 0;
   background:
     url("https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=2400&q=90")
     center / cover no-repeat;
-  transform: scale(1.03);
-  transition: transform 8s ease-out;
+  transform: scale(1.04);
+  will-change: transform;
+  transition: transform 10s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-.hero:hover .hero-background { transform: scale(1); }
+.hero:hover .hero-background {
+  transform: scale(1.0);
+}
 
-/* Refined gradient — bottom-heavy so search bar stays readable */
+/* Gradient overlay — darkens toward bottom for legibility */
 .hero-overlay {
   position: absolute;
   inset: 0;
   background: linear-gradient(
     to bottom,
-    rgba(0,0,0,0.18) 0%,
-    rgba(0,0,0,0.30) 40%,
-    rgba(0,0,0,0.62) 100%
+    rgba(0,0,0,0.10) 0%,
+    rgba(0,0,0,0.25) 45%,
+    rgba(0,0,0,0.65) 100%
   );
 }
 
+/* Content container — vertically centered, slightly below midpoint */
 .hero-content {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   width: 100%;
-  max-width: 960px;
+  max-width: 860px;
   padding: 0 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 32px;
+  gap: 40px;
+  margin-top: 48px; /* push slightly below visual center */
 }
 
 /* ── HEADLINE ── */
 .hero-text {
   text-align: center;
-  color: #fff;
 }
 
 .hero-text h1 {
-  font-size: clamp(2.8rem, 6vw, 4.5rem);
+  font-size: clamp(2.5rem, 5.5vw, 4.5rem);
   font-weight: 800;
-  letter-spacing: -0.04em;
-  line-height: 1.05;
-  margin: 0 0 16px;
+  letter-spacing: -0.05em;
+  line-height: 1.0;
   color: #fff;
-  /* Subtle text stroke for crispness on any bg */
-  -webkit-font-smoothing: antialiased;
+  margin: 0 0 14px;
+  text-shadow: 0 2px 32px rgba(0,0,0,0.25);
 }
 
 .hero-text p {
-  font-size: clamp(1rem, 2vw, 1.15rem);
+  font-size: clamp(0.95rem, 1.8vw, 1.125rem);
   font-weight: 400;
-  color: rgba(255,255,255,0.9);
+  color: rgba(255,255,255,0.88);
   margin: 0;
   letter-spacing: -0.01em;
+  text-shadow: 0 1px 8px rgba(0,0,0,0.3);
 }
 
-/* ── SEARCH BAR ── */
+/* ── SEARCH BAR — Airbnb pill style ── */
 .hero-search {
+  width: 100%;
   display: flex;
   align-items: center;
-  width: 100%;
-  max-width: 860px;
   background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 16px 48px rgba(0,0,0,0.30), 0 4px 12px rgba(0,0,0,0.15);
-  overflow: hidden;
-  height: 72px;
-  gap: 0;
+  border-radius: 60px;
+  height: 66px;
+  padding: 7px 7px 7px 0;
+  box-shadow:
+    0 4px 8px rgba(0,0,0,0.04),
+    0 12px 40px rgba(0,0,0,0.28);
+  /* NO overflow: hidden — that was clipping the button */
 }
 
 .search-group {
@@ -93,35 +100,35 @@
   justify-content: center;
   padding: 0 20px;
   height: 100%;
-  cursor: text;
-  border-radius: 12px;
-  transition: background 0.15s;
   min-width: 0;
-  gap: 4px;
+  gap: 3px;
+  cursor: text;
+  border-radius: 60px;
+  transition: background 0.15s ease;
 }
 
-.search-group:hover { background: #f7f7f7; }
+.search-group:hover { background: #f2f2f2; }
 
 .search-group label {
-  font-size: 0.68rem;
+  display: block;
+  font-size: 0.65rem;
   font-weight: 800;
   color: #222;
   text-transform: uppercase;
-  letter-spacing: 0.07em;
+  letter-spacing: 0.08em;
   white-space: nowrap;
-  cursor: pointer;
   margin: 0;
   padding: 0;
-  display: block;
 }
 
 .search-group input,
 .search-group span {
-  font-size: 0.9375rem;
+  display: block;
+  font-size: 0.875rem;
   font-weight: 400;
-  color: #484848;
-  border: none;
+  color: #555;
   background: transparent;
+  border: none;
   outline: none;
   font-family: inherit;
   white-space: nowrap;
@@ -129,79 +136,10 @@
   text-overflow: ellipsis;
   padding: 0;
   width: 100%;
+  line-height: 1.3;
 }
 
-.search-group input::placeholder { color: #aaa; }
-
-.search-divider {
-  width: 1px;
-  height: 32px;
-  background: #e0e0e0;
-  flex-shrink: 0;
-}
-
-/* Labelled search button */
-.search-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 0 20px;
-  height: 52px;
-  margin: 0 10px;
-  background: var(--brand);
-  color: #fff;
-  border: none;
-  border-radius: 12px;
-  font-family: inherit;
-  font-size: 0.9375rem;
-  font-weight: 700;
-  cursor: pointer;
-  flex-shrink: 0;
-  white-space: nowrap;
-  transition: background 0.15s, transform 0.15s;
-  letter-spacing: -0.01em;
-}
-
-.search-btn:hover {
-  background: var(--brand-dark);
-  transform: scale(1.02);
-}
-
-.search-btn i { font-size: 0.875rem; }
-
-/* Mobile hero */
-@media (max-width: 743px) {
-  .hero { height: auto; padding: 80px 0 40px; }
-
-  .hero-search {
-    flex-direction: column;
-    height: auto;
-    border-radius: 16px;
-    padding: 8px;
-    gap: 0;
-  }
-
-  .search-group {
-    width: 100%;
-    padding: 12px 16px;
-    border-bottom: 1px solid #eee;
-    border-radius: 0;
-    height: auto;
-  }
-
-  .search-group:last-of-type { border-bottom: none; }
-
-  .search-divider { display: none; }
-
-  .search-btn {
-    width: calc(100% - 16px);
-    justify-content: center;
-    margin: 8px;
-    height: 48px;
-  }
-}
-
-.search-group input::placeholder { color: #aaa; }
+.search-group input::placeholder { color: #b0b0b0; }
 
 .search-divider {
   width: 1px;
@@ -210,27 +148,84 @@
   flex-shrink: 0;
 }
 
+/* Search button — pill-shaped, gradient, with text */
 .search-btn {
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #FF385C 0%, #D70466 100%);
-  border: none;
-  color: #fff;
-  font-size: 1rem;
-  cursor: pointer;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: transform 0.2s, box-shadow 0.2s;
+  gap: 8px;
   flex-shrink: 0;
-  margin-right: 0.25rem;
-  box-shadow: 0 4px 16px rgba(215, 4, 102, 0.4);
+  height: 52px;
+  padding: 0 22px;
+  margin-left: 8px;
+  background: linear-gradient(135deg, var(--brand) 0%, var(--brand-dark) 100%);
+  color: #fff;
+  border: none;
+  border-radius: 60px;
+  font-family: inherit;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 4px 18px rgba(255,56,92,0.38);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .search-btn:hover {
-  transform: scale(1.07);
-  box-shadow: 0 6px 24px rgba(215, 4, 102, 0.5);
+  transform: scale(1.04);
+  box-shadow: 0 6px 24px rgba(255,56,92,0.5);
+}
+
+.search-btn i { font-size: 0.8125rem; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 860px) {
+  .hero-content { max-width: 600px; }
+
+  .search-group:nth-child(5),  /* Check-out */
+  .search-divider:nth-of-type(3) { display: none; }
+}
+
+@media (max-width: 640px) {
+  .hero {
+    height: 100svh;
+    min-height: 0;
+    max-height: none;
+  }
+
+  .hero-content {
+    gap: 28px;
+    margin-top: 0;
+    padding: 0 16px;
+  }
+
+  .hero-search {
+    flex-direction: column;
+    height: auto;
+    border-radius: 20px;
+    padding: 8px;
+    gap: 0;
+  }
+
+  .search-group {
+    width: 100%;
+    height: auto;
+    padding: 14px 18px;
+    border-radius: 12px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .search-divider { display: none; }
+
+  .search-btn {
+    width: 100%;
+    height: 52px;
+    margin: 8px 0 0;
+    border-radius: 12px;
+    justify-content: center;
+    font-size: 1rem;
+  }
 }
 
 /* ============================================================
@@ -238,12 +233,12 @@
    ============================================================ */
 .category-strip-wrapper {
   position: sticky;
-  top: 72px;
+  top: var(--nav-h);
   z-index: 90;
-  background: rgba(255,255,255,0.97);
-  border-bottom: 1px solid #eee;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(255,255,255,0.98);
+  border-bottom: 1px solid #EBEBEB;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 }
 
 .category-strip {
