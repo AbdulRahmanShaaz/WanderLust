@@ -30,11 +30,11 @@ layout('layouts/boilerplate');
 <!-- ============ HERO ============ -->
 <section class="hero">
   <div class="hero-background"></div>
+  <div class="hero-overlay"></div>
   <div class="hero-content">
     <div class="hero-text">
-      <span class="hero-kicker">✦ Curated Stays</span>
-      <h1>Find your perfect escape</h1>
-      <p>Beautifully designed homes, city escapes, and serene retreats across top destinations.</p>
+      <h1>Find your perfect stay</h1>
+      <p>Unique homes, curated for every kind of traveller.</p>
     </div>
 
     <form class="hero-search" id="heroSearchForm" action="/listings" method="GET">
@@ -71,6 +71,7 @@ layout('layouts/boilerplate');
       <% if (showTaxesFlag) { %><input type="hidden" name="showTaxes" value="true" /><% } %>
       <button type="submit" class="search-btn" aria-label="Search">
         <i class="fa-solid fa-magnifying-glass"></i>
+        <span>Search</span>
       </button>
     </form>
   </div>
