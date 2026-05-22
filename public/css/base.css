@@ -4,21 +4,56 @@
    ============================================================ */
 
 :root {
-  --brand:       #FF385C;
-  --brand-dark:  #E31C5F;
-  --text:        #1a1a1a;
-  --text-2:      #484848;
-  --text-3:      #717171;
-  --border:      #EBEBEB;
-  --border-2:    #DDDDDD;
-  --bg:          #FFFFFF;
-  --bg-2:        #F7F7F7;
-  --bg-3:        #F0F0F0;
-  --success:     #008A05;
-  --danger:      #C13515;
-  --font:        'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --nav-h:       80px;
-  --ease:        cubic-bezier(0.4, 0, 0.2, 1);
+  /* Core brand */
+  --brand:        #FF385C;
+  --brand-dark:   #E31C5F;
+  --primary:      #FF385C;
+  --primary-dark: #E31C5F;
+
+  /* Text */
+  --text:         #1a1a1a;
+  --text-main:    #1a1a1a;
+  --text-2:       #484848;
+  --text-muted:   #717171;
+  --muted:        #717171;
+  --text-3:       #717171;
+
+  /* Backgrounds */
+  --bg:           #FFFFFF;
+  --bg-2:         #F7F7F7;
+  --bg-3:         #F0F0F0;
+  --bg-soft:      #F7F7F7;
+  --surface:      #FFFFFF;
+  --surface-soft: #F7F7F7;
+
+  /* Accent (used in show.css, signup.css) */
+  --accent:       #FF385C;
+  --accent-soft:  rgba(255,56,92,0.12);
+
+  /* Borders */
+  --border:       #EBEBEB;
+  --border-2:     #DDDDDD;
+
+  /* Shadows */
+  --shadow:       0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.08);
+  --shadow-sm:    0 1px 2px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.05);
+  --shadow-md:    0 6px 16px rgba(0,0,0,0.12);
+
+  /* Radii */
+  --radius-xl:    24px;
+  --radius-lg:    14px;
+  --radius-md:    10px;
+  --radius-pill:  9999px;
+
+  /* Status */
+  --success:      #008A05;
+  --danger:       #C13515;
+
+  /* Misc */
+  --font:         'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-family:  'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --nav-h:        80px;
+  --ease:         cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
