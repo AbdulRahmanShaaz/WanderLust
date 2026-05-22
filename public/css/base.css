@@ -224,7 +224,7 @@ main { flex: 1; }
 .host-link {
   display: none;
   align-items: center;
-  padding: 0 16px;
+  padding: 0 14px;
   height: 42px;
   font-size: 0.875rem;
   font-weight: 600;
@@ -232,9 +232,14 @@ main { flex: 1; }
   border-radius: 22px;
   white-space: nowrap;
   transition: background 0.15s;
+  letter-spacing: -0.01em;
+  text-decoration: none;
 }
 
-.host-link:hover { background: var(--bg-2); }
+.host-link:hover {
+  background: var(--bg-2);
+  text-decoration: none;
+}
 
 @media (min-width: 950px) { .host-link { display: flex; } }
 
@@ -244,32 +249,40 @@ main { flex: 1; }
 .user-menu {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   height: 42px;
-  padding: 0 8px 0 14px;
+  padding: 5px 5px 5px 12px;
   border: 1px solid var(--border-2);
-  border-radius: 22px;
+  border-radius: 21px;
   background: #fff;
   cursor: pointer;
   transition: box-shadow 0.2s var(--ease);
+  font-family: inherit;
 }
 
-.user-menu:hover { box-shadow: 0 2px 4px rgba(0,0,0,0.18); }
+.user-menu:hover {
+  box-shadow: 0 2px 4px rgba(0,0,0,0.18);
+}
 
-.nav-bars { font-size: 0.875rem; color: var(--text); }
+.nav-bars {
+  font-size: 0.8125rem;
+  color: var(--text);
+  line-height: 1;
+}
 
 .avatar {
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background: var(--text);
+  background: #222;
   color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 700;
   flex-shrink: 0;
+  letter-spacing: 0;
 }
 
 /* ── DROPDOWN ── */
