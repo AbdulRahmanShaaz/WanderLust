@@ -1,11 +1,48 @@
 const Listing = require('../models/listing');
 const Review = require('../models/review');
 const ExpressError = require('../utils/ExpressError');
+const { getCoordinates } = require('../utils/geocoder');
 
-// Retrieve and display all listings
+// Retrieve and display all listings with filters
 module.exports.index = async (req, res) => {
-  const listings = await Listing.find();
-  res.render('listings/index', { listings });
+  const search = req.query.search || '';
+  const minPrice = req.query.minPrice || '';
+  const maxPrice = req.query.maxPrice || '';
+  const showTaxes = req.query.showTaxes || 'false';
+  const category = req.query.category || '';
+
+  let filter = {};
+
+  if (search) {
+    const searchRegex = new RegExp(search, 'i');
+    filter.$or = [
+      { title: searchRegex },
+      { location: searchRegex },
+      { country: searchRegex },
+      { description: searchRegex }
+    ];
+  }
+
+  if (minPrice || maxPrice) {
+    filter.price = {};
+    if (minPrice) filter.price.$gte = Number(minPrice);
+    if (maxPrice) filter.price.$lte = Number(maxPrice);
+  }
+
+  if (category) {
+    filter.category = category;
+  }
+
+  const listings = await Listing.find(filter);
+
+  res.render('listings/index', { 
+    listings, 
+    search, 
+    minPrice, 
+    maxPrice, 
+    showTaxes,
+    category
+  });
 };
 
 // Render form to create a new listing
@@ -19,6 +56,13 @@ module.exports.createListing = async (req, res) => {
   if (req.file) {
     listing.image = req.file.path;
   }
+  
+  const coords = getCoordinates(listing.location, listing.country);
+  listing.geometry = {
+    type: 'Point',
+    coordinates: coords
+  };
+  
   listing.owner = req.user._id;
   await listing.save();
   req.flash('success', 'New listing created successfully.');
@@ -109,6 +153,12 @@ module.exports.updateListing = async (req, res) => {
   if (req.file) {
     updates.image = req.file.path;
   }
+
+  const coords = getCoordinates(updates.location, updates.country);
+  updates.geometry = {
+    type: 'Point',
+    coordinates: coords
+  };
 
   const listing = await Listing.findByIdAndUpdate(
     req.params.id,

@@ -1,27 +1,68 @@
 <%
 layout('layouts/boilerplate');
-  pageTitle = `WanderLust | ${listing.title}`;
-  pageCss = '/css/listings/show.css';
-  pageScript = '/js/listings/show.js';
-  const coordinates = listing.geometry && listing.geometry.coordinates ? listing.geometry.coordinates : [77.209, 28.6139];
+pageTitle = 'WanderLust | ' + listing.title;
+pageCss = '/css/listings/show.css';
+pageScript = '/js/listings/show.js';
+
+let lng = 77.209;
+let lat = 28.6139;
+
+if (listing.geometry && listing.geometry.coordinates) {
+  lng = listing.geometry.coordinates[0];
+  lat = listing.geometry.coordinates[1];
+}
 %>
 <script>
-  window.listingCoordinates = [<%= coordinates[0] %>, <%= coordinates[1] %>];
-  window.mapboxToken = "<%= mapboxToken %>";
+  window.listingCoordinates = [<%= lng %>, <%= lat %>];
 </script>
-<% const avgRatingFloat = (typeof averageRating !== 'undefined' && averageRating !== 'New') ? parseFloat(averageRating) : 0; %>
-<% const priceValue = Number(listing.price); const formattedPrice = !Number.isNaN(priceValue) ? priceValue.toLocaleString('en-IN') : 'N/A'; %>
-<%
-  const reviews = typeof visibleReviews !== 'undefined' ? visibleReviews : (listing.reviews || []);
-  const visibleReviewCount = reviews.length;
-  const reviewCount = typeof totalReviews !== 'undefined' ? totalReviews : visibleReviewCount;
-  const visibleLimit = Math.min(4, typeof reviewDisplayLimit !== 'undefined' ? reviewDisplayLimit : 4);
-  const latestReviews = reviews.slice(0, visibleLimit);
-  const ratingLabel = typeof averageRating !== 'undefined' ? averageRating : 'New';
-  const hostName = listing.owner && listing.owner.username ? listing.owner.username : 'WanderLust';
-  const hostInitial = hostName.charAt(0).toUpperCase();
-  const isListingOwner = currentUser && listing.owner && listing.owner._id && listing.owner._id.equals(currentUser._id);
-  const currentUserId = currentUser && currentUser._id ? String(currentUser._id) : null;
+<% 
+let avgRatingFloat = 0;
+if (typeof averageRating !== 'undefined' && averageRating !== 'New') {
+  avgRatingFloat = parseFloat(averageRating);
+}
+
+const priceValue = Number(listing.price);
+const formattedPrice = !Number.isNaN(priceValue) ? priceValue.toLocaleString('en-IN') : 'N/A';
+
+let reviews = listing.reviews || [];
+if (typeof visibleReviews !== 'undefined') {
+  reviews = visibleReviews;
+}
+
+const visibleReviewCount = reviews.length;
+let reviewCount = visibleReviewCount;
+if (typeof totalReviews !== 'undefined') {
+  reviewCount = totalReviews;
+}
+
+let reviewDisplayLimitVal = 4;
+if (typeof reviewDisplayLimit !== 'undefined') {
+  reviewDisplayLimitVal = reviewDisplayLimit;
+}
+const visibleLimit = Math.min(4, reviewDisplayLimitVal);
+const latestReviews = reviews.slice(0, visibleLimit);
+
+let ratingLabel = 'New';
+if (typeof averageRating !== 'undefined') {
+  ratingLabel = averageRating;
+}
+
+let hostName = 'WanderLust';
+if (listing.owner && listing.owner.username) {
+  hostName = listing.owner.username;
+}
+
+const hostInitial = hostName.charAt(0).toUpperCase();
+
+let isListingOwner = false;
+if (currentUser && listing.owner && listing.owner._id) {
+  isListingOwner = listing.owner._id.equals(currentUser._id);
+}
+
+let currentUserId = null;
+if (currentUser && currentUser._id) {
+  currentUserId = String(currentUser._id);
+}
 %>
 
 <div class="listing-container">

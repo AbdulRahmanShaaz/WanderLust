@@ -1,79 +1,172 @@
-<header class="topbar">
+<header class="topbar" id="topbar">
+  <!-- ── LOGO ── -->
   <div class="nav-left">
-    <a href="/listings" class="brand">
-      <svg class="brand-icon" viewBox="0 0 40 40" width="34" height="34" xmlns="http://www.w3.org/2000/svg">
-        <path d="M20,2 C11.5,2 5,8.5 5,17 C5,27 20,38 20,38 C20,38 35,27 35,17 C35,8.5 28.5,2 20,2 Z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round" />
-        <path d="M 12,15 L 16,23 L 20,17 L 24,23 L 28,15" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
-      </svg>
+    <a href="/listings" class="brand" aria-label="WanderLust Home">
+      <div class="brand-logo">
+        <svg viewBox="0 0 44 44" width="36" height="36" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#FF385C"/>
+              <stop offset="100%" style="stop-color:#D70466"/>
+            </linearGradient>
+          </defs>
+          <path d="M22,3 C13,3 6,10 6,19 C6,30 22,41 22,41 C22,41 38,30 38,19 C38,10 31,3 22,3 Z"
+                fill="url(#logoGrad)" opacity="0.12"/>
+          <path d="M22,3 C13,3 6,10 6,19 C6,30 22,41 22,41 C22,41 38,30 38,19 C38,10 31,3 22,3 Z"
+                fill="none" stroke="url(#logoGrad)" stroke-width="2.5" stroke-linejoin="round"/>
+          <path d="M13,17 L17.5,26 L22,19 L26.5,26 L31,17"
+                fill="none" stroke="url(#logoGrad)" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
       <span class="brand-text">WanderLust</span>
     </a>
   </div>
 
+  <!-- ── SEARCH PILL ── -->
   <div class="nav-center">
-    <div class="search-pill">
-      <button type="button">Anywhere</button>
-      <div class="divider"></div>
-      <button type="button">Any week</button>
-      <div class="divider"></div>
-      <button type="button" class="guest-btn">Add guests</button>
-      <button class="search-icon-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
-    </div>
+    <button class="search-pill" id="navSearchPill" aria-label="Search stays">
+      <span class="pill-section">
+        <span class="pill-label">Where</span>
+        <span class="pill-value">Anywhere</span>
+      </span>
+      <span class="pill-sep"></span>
+      <span class="pill-section pill-section--sm">
+        <span class="pill-label">When</span>
+        <span class="pill-value">Any week</span>
+      </span>
+      <span class="pill-sep"></span>
+      <span class="pill-section pill-section--sm">
+        <span class="pill-label">Who</span>
+        <span class="pill-value muted">Add guests</span>
+      </span>
+      <span class="pill-search-btn" aria-hidden="true">
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </span>
+    </button>
   </div>
 
+  <!-- ── RIGHT SIDE ── -->
   <div class="nav-right">
-    <a href="/listings/new" class="host-link">WanderLust your home</a>
-    
+    <a href="/listings/new" class="host-link" id="hostLink">
+      <i class="fa-solid fa-plus-circle"></i>
+      List your place
+    </a>
+
     <div class="user-menu-wrapper">
-      <button type="button" class="user-menu" id="user-menu-btn" aria-expanded="false" aria-haspopup="true">
-        <i class="fa-solid fa-bars"></i>
-        <div class="avatar"><i class="fa-solid fa-user"></i></div>
+      <button
+        type="button"
+        class="user-menu"
+        id="user-menu-btn"
+        aria-expanded="false"
+        aria-haspopup="true"
+        aria-controls="user-dropdown-menu"
+      >
+        <i class="fa-solid fa-bars nav-bars"></i>
+        <div class="avatar">
+          <% if (currentUser) { %>
+            <span class="avatar-initial"><%= currentUser.username.charAt(0).toUpperCase() %></span>
+          <% } else { %>
+            <i class="fa-solid fa-user"></i>
+          <% } %>
+        </div>
       </button>
 
-      <div class="user-dropdown" id="user-dropdown-menu" hidden>
+      <div class="user-dropdown" id="user-dropdown-menu" hidden role="menu">
         <% if (currentUser) { %>
-          <a href="/listings" class="dropdown-item fw-bold">Trips</a>
-          <a href="/listings" class="dropdown-item">Wishlists</a>
+          <div class="dropdown-user-info">
+            <span class="dropdown-avatar"><%= currentUser.username.charAt(0).toUpperCase() %></span>
+            <div>
+              <p class="dropdown-username"><%= currentUser.username %></p>
+              <p class="dropdown-email">WanderLust Member</p>
+            </div>
+          </div>
           <div class="dropdown-divider"></div>
-          <a href="/listings/new" class="dropdown-item">WanderLust your home</a>
-          <a href="#" class="dropdown-item">Account</a>
+          <a href="/listings" class="dropdown-item" role="menuitem">
+            <i class="fa-solid fa-suitcase-rolling"></i> Trips
+          </a>
+          <a href="/listings" class="dropdown-item" role="menuitem">
+            <i class="fa-regular fa-heart"></i> Wishlists
+          </a>
+          <div class="dropdown-divider"></div>
+          <a href="/listings/new" class="dropdown-item" role="menuitem">
+            <i class="fa-solid fa-home"></i> WanderLust your home
+          </a>
           <div class="dropdown-divider"></div>
           <form action="/logout" method="POST" style="margin:0;">
-            <button type="submit" class="dropdown-item">Log out</button>
+            <button type="submit" class="dropdown-item" role="menuitem">
+              <i class="fa-solid fa-right-from-bracket"></i> Log out
+            </button>
           </form>
         <% } else { %>
-          <a href="/signup" class="dropdown-item" style="font-weight: 600;">Sign up</a>
-          <a href="/login" class="dropdown-item">Log in</a>
+          <a href="/signup" class="dropdown-item dropdown-item--bold" role="menuitem">
+            <i class="fa-solid fa-user-plus"></i> Sign up
+          </a>
+          <a href="/login" class="dropdown-item" role="menuitem">
+            <i class="fa-solid fa-right-to-bracket"></i> Log in
+          </a>
           <div class="dropdown-divider"></div>
-          <a href="/listings/new" class="dropdown-item">WanderLust your home</a>
-          <a href="#" class="dropdown-item">Help</a>
+          <a href="/listings/new" class="dropdown-item" role="menuitem">
+            <i class="fa-solid fa-home"></i> WanderLust your home
+          </a>
+          <a href="#" class="dropdown-item" role="menuitem">
+            <i class="fa-solid fa-circle-question"></i> Help
+          </a>
         <% } %>
       </div>
     </div>
   </div>
+</header>
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const userBtn = document.getElementById('user-menu-btn');
-    const userMenu = document.getElementById('user-dropdown-menu');
+(function () {
+  const userBtn  = document.getElementById('user-menu-btn');
+  const userMenu = document.getElementById('user-dropdown-menu');
+  const topbar   = document.getElementById('topbar');
+  const navPill  = document.getElementById('navSearchPill');
 
-    userBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const isHidden = userMenu.hasAttribute('hidden');
-      if (isHidden) {
-        userMenu.removeAttribute('hidden');
-        userBtn.setAttribute('aria-expanded', 'true');
-      } else {
-        userMenu.setAttribute('hidden', '');
-        userBtn.setAttribute('aria-expanded', 'false');
-      }
-    });
+  /* ── Dropdown toggle ── */
+  function openMenu() {
+    userMenu.removeAttribute('hidden');
+    userBtn.setAttribute('aria-expanded', 'true');
+    requestAnimationFrame(() => userMenu.classList.add('dropdown-visible'));
+  }
+  function closeMenu() {
+    userMenu.classList.remove('dropdown-visible');
+    userBtn.setAttribute('aria-expanded', 'false');
+    setTimeout(() => { if (!userMenu.classList.contains('dropdown-visible')) userMenu.setAttribute('hidden', ''); }, 200);
+  }
 
-    document.addEventListener('click', (e) => {
-      if (!userMenu.contains(e.target) && !userBtn.contains(e.target)) {
-        userMenu.setAttribute('hidden', '');
-        userBtn.setAttribute('aria-expanded', 'false');
-      }
-    });
+  userBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    userMenu.hasAttribute('hidden') ? openMenu() : closeMenu();
   });
+
+  document.addEventListener('click', (e) => {
+    if (!userMenu.contains(e.target) && !userBtn.contains(e.target)) closeMenu();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeMenu();
+  });
+
+  /* ── Navbar scroll shadow ── */
+  const onScroll = () => {
+    topbar.classList.toggle('topbar--scrolled', window.scrollY > 10);
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  /* ── Nav search pill → scroll to hero search ── */
+  if (navPill) {
+    navPill.addEventListener('click', () => {
+      const heroInput = document.getElementById('hero-search-input');
+      if (heroInput) {
+        heroInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setTimeout(() => heroInput.focus(), 380);
+      } else {
+        window.location.href = '/listings';
+      }
+    });
+  }
+})();
 </script>
-</header>

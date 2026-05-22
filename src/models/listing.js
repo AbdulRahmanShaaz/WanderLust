@@ -44,6 +44,11 @@ const listingSchema = new Schema({
         trim: true,
         minlength: 2,
     },
+    category: {
+        type: String,
+        enum: ['Beachfront', 'City', 'Mountain', 'Countryside', 'Luxury', 'Budget'],
+        default: 'City'
+    },
     geometry: {
         type: {
             type: String,

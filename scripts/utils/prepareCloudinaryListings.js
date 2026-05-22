@@ -56,6 +56,7 @@ async function prepareCloudinaryListings(sampleListings) {
       price: listing.price,
       location: listing.location,
       country: listing.country,
+      category: listing.category
     });
   }
 

@@ -44,6 +44,22 @@ layout('layouts/boilerplate');
           <span class="field-hint">Enter the amount in rupees (₹).</span>
         </div>
         <div class="field-group">
+          <label for="category">Category</label>
+          <select id="category" name="listing[category]" required>
+            <option value="">Select a category</option>
+            <option value="Beachfront">Beachfront</option>
+            <option value="City">City</option>
+            <option value="Mountain">Mountain</option>
+            <option value="Countryside">Countryside</option>
+            <option value="Luxury">Luxury</option>
+            <option value="Budget">Budget</option>
+          </select>
+          <span class="field-hint">Choose the category that best fits your listing.</span>
+        </div>
+      </div>
+
+      <div class="form-row split">
+        <div class="field-group">
           <label for="image">Listing image</label>
           <label for="image" class="file-upload-label">
             <i class="fa-solid fa-upload"></i>

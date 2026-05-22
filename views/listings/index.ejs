@@ -2,121 +2,289 @@
 layout('layouts/boilerplate');
   pageTitle = 'WanderLust | Premium Stays';
   pageCss = '/css/listings/index.css';
+  pageScript = '/js/listings/filters.js';
   navActionHref = '/listings/new';
   navActionLabel = 'List your place';
   footerText = 'WanderLust — curated stays inspired by Airbnb.';
+  
+  const searchQuery = search || '';
+  const selectedCategory = category || '';
+  const showTaxesFlag = (showTaxes || 'false') === 'true';
+
+  // Count active filters for badge
+  let activeFilterCount = 0;
+  if (minPrice) activeFilterCount++;
+  if (maxPrice) activeFilterCount++;
+  if (showTaxesFlag) activeFilterCount++;
+
+  const categories = [
+    { value: 'Beachfront',  label: 'Beach',       icon: 'fa-umbrella-beach' },
+    { value: 'Mountain',    label: 'Mountains',    icon: 'fa-mountain-sun' },
+    { value: 'City',        label: 'City',         icon: 'fa-city' },
+    { value: 'Countryside', label: 'Countryside',  icon: 'fa-tractor' },
+    { value: 'Luxury',      label: 'Luxury',       icon: 'fa-gem' },
+    { value: 'Budget',      label: 'Budget',       icon: 'fa-piggy-bank' },
+  ];
 %>
+
+<!-- ============ HERO ============ -->
 <section class="hero">
-  <div class="hero-copy">
-    <span class="eyebrow">Homes, hideaways, and city stays</span>
-    <h1>Travel better with stays that feel curated, calm, and confident.</h1>
-    <p>Discover beautifully styled homes, modern urban escapes, and immersive retreats across top destinations.</p>
-    <div class="hero-highlights">
-      <article class="highlight-card">
-        <strong>Verified hosts</strong>
-        <p>Choose trusted stays with transparent pricing and joyful hospitality.</p>
-      </article>
-      <article class="highlight-card">
-        <strong>Flexible stays</strong>
-        <p>Book weekend escapes, work trips, and longer getaways with ease.</p>
-      </article>
-      <article class="highlight-card">
-        <strong>Premium comfort</strong>
-        <p>Enjoy mindful spaces designed for relaxation, productivity, and memorable travel.</p>
-      </article>
+  <div class="hero-background"></div>
+  <div class="hero-content">
+    <div class="hero-text">
+      <span class="hero-kicker">✦ Curated Stays</span>
+      <h1>Find your perfect escape</h1>
+      <p>Beautifully designed homes, city escapes, and serene retreats across top destinations.</p>
     </div>
-  </div>
 
-  <div class="hero-panel" aria-label="Trip search preview">
-    <div class="search-card">
-      <label>
-        Where
-        <span>Goa, Manali, Jaipur, Mumbai</span>
-      </label>
-      <label>
-        When
-        <span>Flexible dates</span>
-      </label>
-      <label>
-        Guests
-        <span>2 travelers</span>
-      </label>
-      <a href="#available-stays" class="search-button">Explore stays</a>
-    </div>
-    <div class="hero-stats">
-      <span><strong><%= listings ? listings.length : 0 %></strong> stays</span>
-      <span><strong>Verified</strong> hosts</span>
-      <span><strong>₹</strong> clear pricing</span>
-    </div>
-  </div>
-</section>
-
-<section class="featured-categories">
-  <div class="section-heading categories-heading">
-    <div>
-      <span class="section-kicker">Book with confidence</span>
-      <h2>Stays designed for every journey</h2>
-      <p>Choose your next stay from curated categories built for comfort, convenience, and unforgettable travel.</p>
-    </div>
-    <a href="#available-stays" class="search-button">Browse stays</a>
-  </div>
-  <div class="destination-grid">
-    <article class="destination-card">
-      <h3>Beachfront escapes</h3>
-      <p>Bright coastal homes with ocean views, easy access to local dining, and peaceful seaside style.</p>
-    </article>
-    <article class="destination-card">
-      <h3>City style homes</h3>
-      <p>Chic apartments and modern studios in the heart of vibrant cities, perfect for urban explorers.</p>
-    </article>
-    <article class="destination-card">
-      <h3>Mountain retreats</h3>
-      <p>Cozy cabins, scenic hideaways, and tranquil lodges for travellers who want adventure with comfort.</p>
-    </article>
-  </div>
-</section>
-
-<main>
-  <% if (!listings || listings.length === 0) { %>
-    <section class="empty-state">
-      <h2>No listings available</h2>
-      <p>We are waiting for more homes to arrive. Seed the database or check back once the listings are loaded.</p>
-    </section>
-  <% } else { %>
-    <div class="section-heading" id="available-stays">
-      <div>
-        <span class="section-kicker">Curated for travel</span>
-        <h2>Available stays</h2>
-        <p><%= listings.length %> homes ready for guests who care about comfort, location, and style.</p>
+    <form class="hero-search" id="heroSearchForm" action="/listings" method="GET">
+      <div class="search-group">
+        <label for="hero-search-input">Where</label>
+        <input
+          id="hero-search-input"
+          type="text"
+          name="search"
+          placeholder="Search destinations..."
+          value="<%= searchQuery %>"
+          autocomplete="off"
+        />
       </div>
+      <div class="search-divider"></div>
+      <div class="search-group">
+        <label>Check in</label>
+        <span>Add dates</span>
+      </div>
+      <div class="search-divider"></div>
+      <div class="search-group">
+        <label>Check out</label>
+        <span>Add dates</span>
+      </div>
+      <div class="search-divider"></div>
+      <div class="search-group">
+        <label>Guests</label>
+        <span>Add guests</span>
+      </div>
+      <!-- preserve active filters when searching -->
+      <% if (selectedCategory) { %><input type="hidden" name="category" value="<%= selectedCategory %>" /><% } %>
+      <% if (minPrice) { %><input type="hidden" name="minPrice" value="<%= minPrice %>" /><% } %>
+      <% if (maxPrice) { %><input type="hidden" name="maxPrice" value="<%= maxPrice %>" /><% } %>
+      <% if (showTaxesFlag) { %><input type="hidden" name="showTaxes" value="true" /><% } %>
+      <button type="submit" class="search-btn" aria-label="Search">
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </button>
+    </form>
+  </div>
+</section>
+
+<!-- ============ CATEGORY STRIP ============ -->
+<div class="category-strip-wrapper">
+  <div class="category-strip" role="navigation" aria-label="Filter by category">
+    <!-- All tab -->
+    <a
+      href="/listings?<%= searchQuery ? 'search=' + encodeURIComponent(searchQuery) + '&' : '' %><%= minPrice ? 'minPrice=' + minPrice + '&' : '' %><%= maxPrice ? 'maxPrice=' + maxPrice + '&' : '' %><%= showTaxesFlag ? 'showTaxes=true' : '' %>"
+      class="category-tab <%= !selectedCategory ? 'active' : '' %>"
+      title="All stays"
+    >
+      <i class="fa-solid fa-border-all"></i>
+      <span>All</span>
+    </a>
+
+    <% categories.forEach(cat => { %>
+    <a
+      href="/listings?category=<%= cat.value %><%= searchQuery ? '&search=' + encodeURIComponent(searchQuery) : '' %><%= minPrice ? '&minPrice=' + minPrice : '' %><%= maxPrice ? '&maxPrice=' + maxPrice : '' %><%= showTaxesFlag ? '&showTaxes=true' : '' %>"
+      class="category-tab <%= selectedCategory === cat.value ? 'active' : '' %>"
+      title="<%= cat.label %>"
+    >
+      <i class="fa-solid <%= cat.icon %>"></i>
+      <span><%= cat.label %></span>
+    </a>
+    <% }) %>
+
+    <div class="category-strip-divider"></div>
+
+    <!-- Filters + Tax toggle -->
+    <div class="strip-controls">
+      <button class="filters-toggle <%= activeFilterCount > 0 ? 'has-filters' : '' %>" id="filtersToggle" type="button">
+        <i class="fa-solid fa-sliders"></i>
+        Filters
+        <% if (activeFilterCount > 0) { %>
+          <span class="filters-badge"><%= activeFilterCount %></span>
+        <% } %>
+      </button>
+
+      <form method="GET" action="/listings" id="taxPillForm">
+        <% if (searchQuery) { %><input type="hidden" name="search" value="<%= searchQuery %>" /><% } %>
+        <% if (selectedCategory) { %><input type="hidden" name="category" value="<%= selectedCategory %>" /><% } %>
+        <% if (minPrice) { %><input type="hidden" name="minPrice" value="<%= minPrice %>" /><% } %>
+        <% if (maxPrice) { %><input type="hidden" name="maxPrice" value="<%= maxPrice %>" /><% } %>
+        <input type="hidden" name="showTaxes" id="taxPillHidden" value="<%= showTaxesFlag ? 'false' : 'true' %>" />
+        <button type="submit" class="tax-pill" title="Toggle total price with taxes">
+          <i class="fa-solid fa-receipt"></i>
+          <span>Total<% if (showTaxesFlag) { %> ✓<% } %></span>
+        </button>
+      </form>
     </div>
-    <section class="listings-grid">
-      <% listings.forEach(listing => { %>
-        <% const listingPrice = Number(listing.price); const formattedListingPrice = !Number.isNaN(listingPrice) ? listingPrice.toLocaleString('en-IN') : 'N/A'; const defaultImage = 'https://images.unsplash.com/photo-1625505826533-5c80aca7d157?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80'; const listingImage = listing.image && listing.image.url ? listing.image.url : listing.image; const optimizedCardImage = getCardImageUrl(listingImage) || listingImage; %>
-        <article class="card">
-          <a class="card__media" href="/listings/<%= listing._id %>" aria-label="View <%= listing.title %>">
-            <img class="card__image" src="<%= optimizedCardImage || defaultImage %>" alt="<%= listing.title %>" onerror="this.onerror=null;this.src='<%= defaultImage %>'" />
-            <span class="card__price">₹<%= formattedListingPrice %> / night</span>
+  </div>
+</div>
+
+<!-- ============ MAIN CONTENT ============ -->
+<main>
+  <div class="content-wrapper">
+    <% if (!listings || listings.length === 0) { %>
+      <section class="empty-state">
+        <i class="fa-solid fa-magnifying-glass" style="font-size:3rem;color:#ccc;margin-bottom:1rem;display:block;"></i>
+        <h2>No stays found</h2>
+        <p>Try adjusting your search or filters to find available stays.</p>
+        <a href="/listings" class="btn-primary" style="display:inline-flex;align-items:center;gap:0.5rem;margin-top:1rem;">
+          <i class="fa-solid fa-rotate-left"></i> Clear all filters
+        </a>
+      </section>
+    <% } else { %>
+
+      <!-- Active filters chips -->
+      <% const hasAnyFilter = searchQuery || selectedCategory || minPrice || maxPrice || showTaxesFlag; %>
+      <% if (hasAnyFilter) { %>
+      <div class="active-filters">
+        <% if (searchQuery) { %>
+          <a class="filter-chip" href="/listings?<%= selectedCategory ? 'category=' + selectedCategory + '&' : '' %><%= minPrice ? 'minPrice=' + minPrice + '&' : '' %><%= maxPrice ? 'maxPrice=' + maxPrice + '&' : '' %><%= showTaxesFlag ? 'showTaxes=true' : '' %>">
+            📍 <%= searchQuery %> <span class="remove-chip">×</span>
           </a>
-          <div class="card__body">
-            <div class="card__topline">
-              <span class="card__badge"><%= listing.country %></span>
-              <span class="card__rating">New</span>
-            </div>
-            <div>
-              <h2 class="card__title"><%= listing.title %></h2>
-              <div class="card__meta">
-                <span><strong><%= listing.location %></strong></span>
+        <% } %>
+        <% if (selectedCategory) { %>
+          <a class="filter-chip" href="/listings?<%= searchQuery ? 'search=' + encodeURIComponent(searchQuery) + '&' : '' %><%= minPrice ? 'minPrice=' + minPrice + '&' : '' %><%= maxPrice ? 'maxPrice=' + maxPrice + '&' : '' %><%= showTaxesFlag ? 'showTaxes=true' : '' %>">
+            🏷️ <%= selectedCategory %> <span class="remove-chip">×</span>
+          </a>
+        <% } %>
+        <% if (minPrice || maxPrice) { %>
+          <a class="filter-chip" href="/listings?<%= searchQuery ? 'search=' + encodeURIComponent(searchQuery) + '&' : '' %><%= selectedCategory ? 'category=' + selectedCategory + '&' : '' %><%= showTaxesFlag ? 'showTaxes=true' : '' %>">
+            💰 ₹<%= minPrice || '0' %> – ₹<%= maxPrice || '∞' %> <span class="remove-chip">×</span>
+          </a>
+        <% } %>
+        <% if (showTaxesFlag) { %>
+          <a class="filter-chip" href="/listings?<%= searchQuery ? 'search=' + encodeURIComponent(searchQuery) + '&' : '' %><%= selectedCategory ? 'category=' + selectedCategory + '&' : '' %><%= minPrice ? 'minPrice=' + minPrice + '&' : '' %><%= maxPrice ? 'maxPrice=' + maxPrice : '' %>">
+            🧾 Total with taxes <span class="remove-chip">×</span>
+          </a>
+        <% } %>
+        <a href="/listings" class="filter-chip" style="opacity:0.6;">Clear all ×</a>
+      </div>
+      <% } %>
+
+      <div class="page-header">
+        <div class="header-text">
+          <p class="listing-count"><%= listings.length %> stay<%= listings.length === 1 ? '' : 's' %> available</p>
+          <h2><%= selectedCategory ? selectedCategory + ' stays' : searchQuery ? 'Results for "' + searchQuery + '"' : 'Available stays' %></h2>
+        </div>
+      </div>
+
+      <div class="layout">
+        <!-- Filters Slide-in Panel -->
+        <aside class="filters-panel" id="filtersPanel" role="dialog" aria-modal="true" aria-label="Filters">
+          <div class="filters-header">
+            <h3>Filters</h3>
+            <button class="close-filters" id="closeFilters" aria-label="Close filters">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+
+          <form id="filtersForm" class="filters-form" action="/listings" method="GET">
+            <% if (searchQuery) { %><input type="hidden" name="search" value="<%= searchQuery %>" /><% } %>
+            <% if (selectedCategory) { %><input type="hidden" name="category" value="<%= selectedCategory %>" /><% } %>
+
+            <!-- Price Range -->
+            <div class="filter-section">
+              <h4>Price range</h4>
+              <p style="font-size:0.85rem;color:#717171;margin:0 0 1rem;">Nightly price in ₹ before taxes</p>
+              <div class="price-range">
+                <div class="price-input">
+                  <label>Min price</label>
+                  <input type="number" name="minPrice" placeholder="₹ 0" value="<%= minPrice || '' %>" min="0" />
+                </div>
+                <span class="price-separator">–</span>
+                <div class="price-input">
+                  <label>Max price</label>
+                  <input type="number" name="maxPrice" placeholder="Any" value="<%= maxPrice || '' %>" min="0" />
+                </div>
               </div>
             </div>
-            <p class="card__desc"><%= listing.description %></p>
-            <div class="card__footer">
-              <span>Hosted stay</span>
-              <a href="/listings/<%= listing._id %>" class="card__action">View stay</a>
+
+            <!-- Show taxes toggle -->
+            <div class="filter-section">
+              <div class="tax-toggle-row">
+                <div class="toggle-text">
+                  <h4>Show total with taxes</h4>
+                  <p>Display prices including all fees</p>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="taxSwitch" name="showTaxes" value="true" <%= showTaxesFlag ? 'checked' : '' %> />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
             </div>
+
+            <div class="filter-actions">
+              <button type="button" class="btn-reset" id="filterResetBtn">Reset all</button>
+              <button type="submit" class="btn-apply">Show <%= listings.length %> stays</button>
+            </div>
+          </form>
+        </aside>
+
+        <!-- Listings Grid -->
+        <section class="listings-section">
+          <div class="listings-grid">
+            <% listings.forEach(listing => { %>
+              <%
+                const listingPrice = Number(listing.price);
+                const taxRate = 0.12;
+                const totalPrice = showTaxesFlag ? listingPrice * (1 + taxRate) : listingPrice;
+                const formattedListingPrice = !Number.isNaN(totalPrice)
+                  ? Math.round(totalPrice).toLocaleString('en-IN')
+                  : 'N/A';
+                const defaultImage = 'https://images.unsplash.com/photo-1625505826533-5c80aca7d157?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80';
+                const listingImage = listing.image && listing.image.url ? listing.image.url : listing.image;
+                const optimizedCardImage = getCardImageUrl(listingImage) || listingImage;
+              %>
+              <article class="listing-card">
+                <a href="/listings/<%= listing._id %>" class="card-link">
+                  <div class="card-image">
+                    <img
+                      src="<%= optimizedCardImage || defaultImage %>"
+                      alt="<%= listing.title %>"
+                      loading="lazy"
+                      onerror="this.onerror=null;this.src='<%= defaultImage %>'"
+                    />
+                    <% if (listing.category) { %>
+                      <span class="card-category-badge"><%= listing.category %></span>
+                    <% } %>
+                    <button class="card-favorite" type="button" aria-label="Save to wishlist" onclick="event.preventDefault();">
+                      <i class="fa-regular fa-heart"></i>
+                    </button>
+                    <div class="card-price">
+                      <span class="price-amount">₹<%= formattedListingPrice %></span>
+                      <span class="price-unit"> / night<% if (showTaxesFlag) { %> total<% } %></span>
+                    </div>
+                  </div>
+                  <div class="card-content">
+                    <span class="card-location"><%= listing.location %>, <%= listing.country %></span>
+                    <h3 class="card-title"><%= listing.title %></h3>
+                    <div class="card-footer">
+                      <span class="card-rating">
+                        <i class="fa-solid fa-star"></i>
+                        New
+                      </span>
+                    </div>
+                  </div>
+                </a>
+              </article>
+            <% }) %>
           </div>
-        </article>
-      <% }) %>
-    </section>
-  <% } %>
+        </section>
+      </div>
+
+    <% } %>
+  </div>
 </main>
+
+<!-- Backdrop outside layout -->
+<div class="filters-backdrop" id="filtersBackdrop" aria-hidden="true"></div>
+
+<!-- Filters JS is /public/js/listings/filters.js -->
