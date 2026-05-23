@@ -58,7 +58,7 @@ const updateFieldState = (field, showEmptySuccess = false) => {
 };
 
 forms.forEach((form) => {
-  const fields = form.querySelectorAll('input, textarea');
+  const fields = form.querySelectorAll('input, textarea, select');
 
   fields.forEach((field) => {
     field.addEventListener('input', () => {

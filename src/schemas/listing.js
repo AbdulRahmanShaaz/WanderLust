@@ -35,6 +35,13 @@ const listingSchema = Joi.object({
     .min(2)
     .required()
     .label('Country'),
+  category: Joi.string()
+    .valid('Beachfront', 'City', 'Mountain', 'Countryside', 'Luxury', 'Budget')
+    .default('City')
+    .label('Category')
+    .messages({
+      'any.only': 'Category must be one of: Beachfront, City, Mountain, Countryside, Luxury, Budget'
+    }),
   image: Joi.string()
     .uri()
     .allow('')
