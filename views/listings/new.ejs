@@ -37,25 +37,42 @@ layout('layouts/boilerplate');
         </div>
       </div>
 
-      <div class="form-row split">
-        <div class="field-group">
-          <label for="price">Price per night</label>
-          <input type="number" id="price" name="listing[price]" placeholder="4500" required min="0" step="1" />
-          <span class="field-hint">Enter the amount in rupees (₹).</span>
+      <div class="field-group">
+        <label for="price">Price per night</label>
+        <input type="number" id="price" name="listing[price]" placeholder="4500" required min="0" step="1" />
+        <span class="field-hint">Enter the amount in rupees (₹).</span>
+      </div>
+
+      <div class="field-group">
+        <label>What best describes your place?</label>
+        <input type="hidden" id="category" name="listing[category]" value="" required />
+        <div class="category-picker" id="categoryPicker">
+          <button type="button" class="category-card" data-value="Beachfront">
+            <div class="category-card-icon"><i class="fa-solid fa-umbrella-beach"></i></div>
+            <span class="category-card-label">Beachfront</span>
+          </button>
+          <button type="button" class="category-card" data-value="City">
+            <div class="category-card-icon"><i class="fa-solid fa-city"></i></div>
+            <span class="category-card-label">City</span>
+          </button>
+          <button type="button" class="category-card" data-value="Mountain">
+            <div class="category-card-icon"><i class="fa-solid fa-mountain-sun"></i></div>
+            <span class="category-card-label">Mountain</span>
+          </button>
+          <button type="button" class="category-card" data-value="Countryside">
+            <div class="category-card-icon"><i class="fa-solid fa-tractor"></i></div>
+            <span class="category-card-label">Countryside</span>
+          </button>
+          <button type="button" class="category-card" data-value="Luxury">
+            <div class="category-card-icon"><i class="fa-solid fa-gem"></i></div>
+            <span class="category-card-label">Luxury</span>
+          </button>
+          <button type="button" class="category-card" data-value="Budget">
+            <div class="category-card-icon"><i class="fa-solid fa-piggy-bank"></i></div>
+            <span class="category-card-label">Budget</span>
+          </button>
         </div>
-        <div class="field-group">
-          <label for="category">Category</label>
-          <select id="category" name="listing[category]" required>
-            <option value="">Select a category</option>
-            <option value="Beachfront">Beachfront</option>
-            <option value="City">City</option>
-            <option value="Mountain">Mountain</option>
-            <option value="Countryside">Countryside</option>
-            <option value="Luxury">Luxury</option>
-            <option value="Budget">Budget</option>
-          </select>
-          <span class="field-hint">Choose the category that best fits your listing.</span>
-        </div>
+        <span class="field-hint">Pick the one that guests would expect when booking your property.</span>
       </div>
 
       <div class="form-row split">

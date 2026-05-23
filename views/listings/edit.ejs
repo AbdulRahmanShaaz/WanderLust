@@ -37,25 +37,42 @@ layout('layouts/boilerplate');
         </div>
       </div>
 
-      <div class="form-row split">
-        <div class="field-group">
-          <label for="price">Price per night</label>
-          <input type="number" id="price" name="listing[price]" value="<%= listing.price %>" required min="0" step="1" />
-          <span class="field-hint">Enter the amount in rupees (₹).</span>
+      <div class="field-group">
+        <label for="price">Price per night</label>
+        <input type="number" id="price" name="listing[price]" value="<%= listing.price %>" required min="0" step="1" />
+        <span class="field-hint">Enter the amount in rupees (₹).</span>
+      </div>
+
+      <div class="field-group">
+        <label>What best describes your place?</label>
+        <input type="hidden" id="category" name="listing[category]" value="<%= listing.category || '' %>" required />
+        <div class="category-picker" id="categoryPicker">
+          <button type="button" class="category-card <%= listing.category === 'Beachfront' ? 'selected' : '' %>" data-value="Beachfront">
+            <div class="category-card-icon"><i class="fa-solid fa-umbrella-beach"></i></div>
+            <span class="category-card-label">Beachfront</span>
+          </button>
+          <button type="button" class="category-card <%= listing.category === 'City' ? 'selected' : '' %>" data-value="City">
+            <div class="category-card-icon"><i class="fa-solid fa-city"></i></div>
+            <span class="category-card-label">City</span>
+          </button>
+          <button type="button" class="category-card <%= listing.category === 'Mountain' ? 'selected' : '' %>" data-value="Mountain">
+            <div class="category-card-icon"><i class="fa-solid fa-mountain-sun"></i></div>
+            <span class="category-card-label">Mountain</span>
+          </button>
+          <button type="button" class="category-card <%= listing.category === 'Countryside' ? 'selected' : '' %>" data-value="Countryside">
+            <div class="category-card-icon"><i class="fa-solid fa-tractor"></i></div>
+            <span class="category-card-label">Countryside</span>
+          </button>
+          <button type="button" class="category-card <%= listing.category === 'Luxury' ? 'selected' : '' %>" data-value="Luxury">
+            <div class="category-card-icon"><i class="fa-solid fa-gem"></i></div>
+            <span class="category-card-label">Luxury</span>
+          </button>
+          <button type="button" class="category-card <%= listing.category === 'Budget' ? 'selected' : '' %>" data-value="Budget">
+            <div class="category-card-icon"><i class="fa-solid fa-piggy-bank"></i></div>
+            <span class="category-card-label">Budget</span>
+          </button>
         </div>
-        <div class="field-group">
-          <label for="category">Category</label>
-          <select id="category" name="listing[category]" required>
-            <option value="">Select a category</option>
-            <option value="Beachfront" <%= listing.category === 'Beachfront' ? 'selected' : '' %>>Beachfront</option>
-            <option value="City" <%= listing.category === 'City' ? 'selected' : '' %>>City</option>
-            <option value="Mountain" <%= listing.category === 'Mountain' ? 'selected' : '' %>>Mountain</option>
-            <option value="Countryside" <%= listing.category === 'Countryside' ? 'selected' : '' %>>Countryside</option>
-            <option value="Luxury" <%= listing.category === 'Luxury' ? 'selected' : '' %>>Luxury</option>
-            <option value="Budget" <%= listing.category === 'Budget' ? 'selected' : '' %>>Budget</option>
-          </select>
-          <span class="field-hint">Choose the category that best fits your listing.</span>
-        </div>
+        <span class="field-hint">Pick the one that guests would expect when booking your property.</span>
       </div>
 
       <div class="form-row split">

@@ -78,3 +78,58 @@ forms.forEach((form) => {
     }
   });
 });
+
+/* ── Category Card Picker ── */
+(function () {
+  const picker = document.getElementById('categoryPicker');
+  const hidden = document.getElementById('category');
+  if (!picker || !hidden) return;
+
+  const cards = picker.querySelectorAll('.category-card');
+
+  cards.forEach((card) => {
+    card.addEventListener('click', () => {
+      cards.forEach((c) => c.classList.remove('selected'));
+      card.classList.add('selected');
+      hidden.value = card.dataset.value;
+
+      // Clear any validation error on the picker
+      const container = hidden.closest('.field-group');
+      const msg = container?.querySelector('.validation-message');
+      if (msg) {
+        msg.classList.remove('is-error');
+        msg.classList.add('is-success');
+        msg.textContent = 'Great choice!';
+      }
+      picker.classList.remove('picker-error');
+
+      // Trigger validation on the hidden input
+      hidden.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+  });
+
+  // Highlight picker if empty on form submit
+  const form = hidden.closest('form');
+  if (form) {
+    form.addEventListener('submit', (e) => {
+      if (!hidden.value) {
+        e.preventDefault();
+        picker.classList.add('picker-error');
+        const container = hidden.closest('.field-group');
+        let msg = container?.querySelector('.validation-message');
+        if (!msg && container) {
+          msg = document.createElement('span');
+          msg.className = 'validation-message';
+          msg.setAttribute('aria-live', 'polite');
+          container.appendChild(msg);
+        }
+        if (msg) {
+          msg.classList.remove('is-success');
+          msg.classList.add('is-error');
+          msg.textContent = 'Please select a category for your listing.';
+        }
+        picker.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    });
+  }
+})();
